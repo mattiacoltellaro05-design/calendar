@@ -31,6 +31,7 @@
       background: linear-gradient(135deg, var(--sage-50) 0%, var(--bg) 100%);
       min-height: 100vh;
       color: var(--sage-700);
+      touch-action: manipulation; /* Migliora touch su mobile */
     }
 
     .container {
@@ -80,9 +81,10 @@
       align-items: center;
       gap: 8px;
       font-size: 14px;
+      touch-action: manipulation;
     }
 
-    .btn:hover {
+    .btn:hover, .btn:active {
       background: var(--sage-500);
       transform: translateY(-1px);
     }
@@ -168,21 +170,16 @@
       background: white;
       border-radius: 20px;
       border-left: 4px solid var(--accent);
-      cursor: grab;
+      cursor: pointer;
       transition: all 0.2s ease;
       box-shadow: 0 2px 12px rgba(0,0,0,0.08);
       user-select: none;
+      touch-action: manipulation;
     }
 
-    .event:hover {
+    .event:hover, .event:active {
       transform: translateX(4px);
       box-shadow: 0 4px 20px rgba(0,0,0,0.12);
-    }
-
-    .event.dragging {
-      opacity: 0.7;
-      transform: rotate(3deg) scale(1.02);
-      z-index: 1000;
     }
 
     .event.lavoro { border-left-color: var(--accent); }
@@ -260,6 +257,7 @@
       display: flex;
       gap: 12px;
       align-items: center;
+      z-index: 1000;
     }
 
     .quick-input {
@@ -270,22 +268,76 @@
       font-size: 16px;
       outline: none;
       transition: border-color 0.2s ease;
+      min-height: 48px; /* Migliore touch target su mobile */
     }
 
     .quick-input:focus {
       border-color: var(--sage-400);
     }
 
+    /* Modal per editing */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 24px;
+      border-radius: 24px;
+      width: 100%;
+      max-width: 500px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+
+    .modal h3 {
+      margin-bottom: 20px;
+      color: var(--sage-800);
+    }
+
+    .modal input, .modal select {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid var(--sage-200);
+      border-radius: 12px;
+      margin-bottom: 16px;
+      font-size: 16px;
+    }
+
+    .modal-footer {
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+    }
+
     @media (max-width: 768px) {
+      .container {
+        padding: 12px;
+        gap: 16px;
+      }
+      
       .timeline-container {
         padding: 16px;
         border-radius: 20px;
+        height: 50vh;
       }
       
       .quick-add {
         bottom: 10px;
         left: 10px;
         right: 10px;
+        padding: 12px;
       }
       
       .controls {
@@ -293,7 +345,12 @@
         align-items: stretch;
       }
       
-      .btn {
+      .btn, .quick-input {
+        justify-content: center;
+        min-height: 48px;
+      }
+      
+      .date-nav {
         justify-content: center;
       }
     }
@@ -365,10 +422,30 @@
     </div>
   </div>
 
+  <!-- Modal per editing -->
+  <div class="modal" id="editModal">
+    <div class="modal-content">
+      <h3>✏️ Modifica Evento</h3>
+      <input type="text" id="editTitle" placeholder="Titolo evento">
+      <input type="time" id="editTime">
+      <select id="editCategory">
+        <option value="lavoro">💼 Lavoro</option>
+        <option value="salute">❤️ Salute</option>
+        <option value="famiglia">👨‍👩‍👧 Famiglia</option>
+        <option value="casa">🏠 Casa</option>
+      </select>
+      <div class="modal-footer">
+        <button class="btn" onclick="closeModal()">Annulla</button>
+        <button class="btn btn-primary" onclick="saveEdit()">Salva</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     let events = JSON.parse(localStorage.getItem('sageTimeline')) || {};
     let currentDate = new Date();
     currentDate.setHours(0, 0, 0, 0);
+    let editingEventId = null;
 
     function saveData() {
       localStorage.setItem('sageTimeline', JSON.stringify(events));
@@ -386,7 +463,7 @@
     function parseEvent(text) {
       const timeMatch = text.match(/(\d{1,2}):?(\d{2})?/);
       let time = timeMatch ? `${timeMatch[1].padStart(2,'0')}:00` : '09:00';
-      if (timeMatch[2]) time = `${timeMatch[1].padStart(2,'0')}:${timeMatch[2]}`;
+      if (timeMatch && timeMatch[2]) time = `${timeMatch[1].padStart(2,'0')}:${timeMatch[2]}`;
       
       const title = text.replace(/(\d{1,2}):?(\d{2})?.*/, '').trim();
       return { title, time, category: 'lavoro' };
@@ -404,12 +481,51 @@
       
       const eventData = parseEvent(text);
       eventData.category = category;
-      eventData.id = Date.now();
+      eventData.id = Date.now() + Math.random(); // ID unico
       
       events[dateKey].push(eventData);
       saveData();
       input.value = '';
       render();
+    }
+
+    function editEvent(id) {
+      const dateKey = getDateKey(currentDate);
+      const dayEvents = events[dateKey] || [];
+      const event = dayEvents.find(e => e.id === id);
+      
+      if (!event) return;
+      
+      editingEventId = id;
+      document.getElementById('editTitle').value = event.title;
+      document.getElementById('editTime').value = event.time;
+      document.getElementById('editCategory').value = event.category;
+      
+      document.getElementById('editModal').style.display = 'flex';
+    }
+
+    function saveEdit() {
+      const dateKey = getDateKey(currentDate);
+      const dayEvents = events[dateKey] || [];
+      
+      const eventIndex = dayEvents.findIndex(e => e.id === editingEventId);
+      if (eventIndex === -1) return;
+      
+      dayEvents[eventIndex] = {
+        ...dayEvents[eventIndex],
+        title: document.getElementById('editTitle').value,
+        time: document.getElementById('editTime').value,
+        category: document.getElementById('editCategory').value
+      };
+      
+      saveData();
+      closeModal();
+      render();
+    }
+
+    function closeModal() {
+      document.getElementById('editModal').style.display = 'none';
+      editingEventId = null;
     }
 
     function renderTimeline() {
@@ -428,18 +544,12 @@
       timeline.innerHTML = dayEvents
         .sort((a, b) => a.time.localeCompare(b.time))
         .map(event => `
-          <div class="event ${event.category}" draggable="true" data-id="${event.id}">
+          <div class="event ${event.category}" data-id="${event.id}" onclick="editEvent('${event.id}')">
             <div class="event-time">${event.time}</div>
             <div class="event-title">${event.title}</div>
             <div class="event-category">${getCategoryLabel(event.category)}</div>
           </div>
         `).join('');
-      
-      // Re-attach drag events
-      document.querySelectorAll('.event').forEach(eventEl => {
-        eventEl.addEventListener('dragstart', handleDragStart);
-        eventEl.addEventListener('dragend', handleDragEnd);
-      });
       
       document.getElementById('eventCount').textContent = `${dayEvents.length} eventi`;
     }
@@ -484,7 +594,7 @@
       
       const totalEvents = dayEvents.length;
       const workEvents = dayEvents.filter(e => e.category === 'lavoro').length;
-      const freeSlots = 24 - totalEvents * 0.5; // Rough estimate
+      const freeSlots = 24 - totalEvents * 0.5;
       
       insightsEl.innerHTML = `
         <div class="insight">
@@ -532,22 +642,14 @@
       }
     });
 
-    // Drag & Drop
-    let draggedEvent = null;
-
-    function handleDragStart(e) {
-      draggedEvent = e.target;
-      e.target.classList.add('dragging');
-    }
-
-    function handleDragEnd(e) {
-      e.target.classList.remove('dragging');
-      draggedEvent = null;
-    }
-
-    // Enter per aggiungere evento
+    // Event listeners
     document.getElementById('quickInput').addEventListener('keypress', (e) => {
       if (e.key === 'Enter') addQuickEvent();
+    });
+
+    // Chiudi modal cliccando fuori
+    document.getElementById('editModal').addEventListener('click', (e) => {
+      if (e.target.classList.contains('modal')) closeModal();
     });
 
     function render() {
@@ -561,3 +663,4 @@
   </script>
 </body>
 </html>
+\
