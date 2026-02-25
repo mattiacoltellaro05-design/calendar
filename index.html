@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sage Timeline - Calendario Intelligente</title>
+  <style>
+    :root {
+      --sage-50: #f0f9f0;
+      --sage-100: #d4e4d8;
+      --sage-200: #b8d0b5;
+      --sage-300: #9abc92;
+      --sage-400: #7da77e;
+      --sage-500: #61936a;
+      --sage-600: #477156;
+      --sage-700: #2d4a2d;
+      --sage-800: #133813;
+      --accent: #f4a261;
+      --gold: #e9c46a;
+      --bg: #fafaf9;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, var(--sage-50) 0%, var(--bg) 100%);
+      min-height: 100vh;
+      color: var(--sage-700);
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      min-height: 100vh;
+      gap: 24px;
+    }
+
+    .header {
+      background: white;
+      padding: 24px;
+      border-radius: 24px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+      border: 1px solid var(--sage-100);
+    }
+
+    .header h1 {
+      font-size: clamp(1.5rem, 4vw, 2.25rem);
+      background: linear-gradient(135deg, var(--sage-700), var(--sage-500));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
+    }
+
+    .controls {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .btn {
+      background: var(--sage-400);
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 16px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+    }
+
+    .btn:hover {
+      background: var(--sage-500);
+      transform: translateY(-1px);
+    }
+
+    .btn-primary {
+      background: var(--accent);
+    }
+
+    .date-nav {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .date-display {
+      font-size: 1.25rem;
+      font-weight: 600;
+      min-width: 200px;
+      text-align: center;
+    }
+
+    .timeline-container {
+      background: white;
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+      border: 1px solid var(--sage-100);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .timeline-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 2px solid var(--sage-100);
+    }
+
+    .timeline {
+      height: 60vh;
+      overflow-y: auto;
+      padding-right: 12px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--sage-300) var(--sage-100);
+    }
+
+    .timeline::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .timeline::-webkit-scrollbar-track {
+      background: var(--sage-100);
+      border-radius: 3px;
+    }
+
+    .timeline::-webkit-scrollbar-thumb {
+      background: var(--sage-300);
+      border-radius: 3px;
+    }
+
+    .timeline-track {
+      position: relative;
+      height: 100%;
+    }
+
+    .timeline-track::before {
+      content: '';
+      position: absolute;
+      left: 20px;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: linear-gradient(to bottom, var(--sage-200), var(--sage-400));
+      border-radius: 2px;
+    }
+
+    .event {
+      position: relative;
+      margin: 20px 0;
+      padding: 20px;
+      background: white;
+      border-radius: 20px;
+      border-left: 4px solid var(--accent);
+      cursor: grab;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      user-select: none;
+    }
+
+    .event:hover {
+      transform: translateX(4px);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+    }
+
+    .event.dragging {
+      opacity: 0.7;
+      transform: rotate(3deg) scale(1.02);
+      z-index: 1000;
+    }
+
+    .event.lavoro { border-left-color: var(--accent); }
+    .event.salute { border-left-color: #10b981; }
+    .event.famiglia { border-left-color: #f59e0b; }
+    .event.casa { border-left-color: #ef4444; }
+
+    .event-time {
+      font-weight: 600;
+      color: var(--sage-700);
+      margin-bottom: 8px;
+      font-size: 0.95rem;
+    }
+
+    .event-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: var(--sage-800);
+    }
+
+    .event-category {
+      display: inline-block;
+      background: var(--sage-100);
+      color: var(--sage-700);
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+
+    .insights {
+      background: linear-gradient(135deg, var(--sage-50), var(--sage-100));
+      padding: 20px;
+      border-radius: 20px;
+      border: 1px solid var(--sage-200);
+    }
+
+    .insight {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+      padding: 12px;
+      background: white;
+      border-radius: 16px;
+      border-left: 4px solid var(--gold);
+    }
+
+    .insight:last-child {
+      margin-bottom: 0;
+    }
+
+    .insight-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--gold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+    }
+
+    .quick-add {
+      position: sticky;
+      bottom: 20px;
+      left: 20px;
+      right: 20px;
+      background: white;
+      padding: 16px;
+      border-radius: 20px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.16);
+      border: 1px solid var(--sage-200);
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .quick-input {
+      flex: 1;
+      padding: 12px 16px;
+      border: 2px solid var(--sage-200);
+      border-radius: 12px;
+      font-size: 16px;
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+
+    .quick-input:focus {
+      border-color: var(--sage-400);
+    }
+
+    @media (max-width: 768px) {
+      .timeline-container {
+        padding: 16px;
+        border-radius: 20px;
+      }
+      
+      .quick-add {
+        bottom: 10px;
+        left: 10px;
+        right: 10px;
+      }
+      
+      .controls {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      
+      .btn {
+        justify-content: center;
+      }
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--sage-500);
+    }
+
+    .empty-state svg {
+      width: 80px;
+      height: 80px;
+      margin-bottom: 20px;
+      opacity: 0.6;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Sage Timeline</h1>
+      <div class="controls">
+        <div class="date-nav">
+          <button class="btn" onclick="changeDate(-1)">◀️</button>
+          <div class="date-display" id="currentDate">25 Feb 2026</div>
+          <button class="btn" onclick="changeDate(1)">▶️</button>
+        </div>
+        <button class="btn btn-primary" onclick="exportData()">💾 Backup</button>
+        <input type="file" id="importFile" accept=".json" style="display: none">
+        <button class="btn" onclick="document.getElementById('importFile').click()">📁 Ripristina</button>
+      </div>
+    </div>
+
+    <div class="timeline-container">
+      <div class="timeline-header">
+        <h2 id="timelineTitle">Martedì 25 Feb 2026</h2>
+        <span id="eventCount">0 eventi</span>
+      </div>
+      <div class="timeline" id="timeline">
+        <div class="empty-state" id="emptyState">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+          </svg>
+          <h3>La tua timeline è vuota</h3>
+          <p>Usa il campo in basso per aggiungere velocemente i primi eventi</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="insights" id="insights">
+      <div class="insight">
+        <div class="insight-icon">🧠</div>
+        <div>
+          <strong>Analisi pattern:</strong> Nessun dato ancora disponibile
+        </div>
+      </div>
+    </div>
+
+    <div class="quick-add">
+      <input type="text" class="quick-input" id="quickInput" placeholder="Aggiungi evento... (es. 'Riunione 14:00 Lavoro')" />
+      <select id="quickCategory">
+        <option value="lavoro">💼 Lavoro</option>
+        <option value="salute">❤️ Salute</option>
+        <option value="famiglia">👨‍👩‍👧 Famiglia</option>
+        <option value="casa">🏠 Casa</option>
+      </select>
+      <button class="btn btn-primary" onclick="addQuickEvent()">+</button>
+    </div>
+  </div>
+
+  <script>
+    let events = JSON.parse(localStorage.getItem('sageTimeline')) || {};
+    let currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0);
+
+    function saveData() {
+      localStorage.setItem('sageTimeline', JSON.stringify(events));
+    }
+
+    function getDateKey(date) {
+      return date.toISOString().split('T')[0];
+    }
+
+    function changeDate(days) {
+      currentDate.setDate(currentDate.getDate() + days);
+      render();
+    }
+
+    function parseEvent(text) {
+      const timeMatch = text.match(/(\d{1,2}):?(\d{2})?/);
+      let time = timeMatch ? `${timeMatch[1].padStart(2,'0')}:00` : '09:00';
+      if (timeMatch[2]) time = `${timeMatch[1].padStart(2,'0')}:${timeMatch[2]}`;
+      
+      const title = text.replace(/(\d{1,2}):?(\d{2})?.*/, '').trim();
+      return { title, time, category: 'lavoro' };
+    }
+
+    function addQuickEvent() {
+      const input = document.getElementById('quickInput');
+      const category = document.getElementById('quickCategory').value;
+      const text = input.value.trim();
+      
+      if (!text) return;
+      
+      const dateKey = getDateKey(currentDate);
+      if (!events[dateKey]) events[dateKey] = [];
+      
+      const eventData = parseEvent(text);
+      eventData.category = category;
+      eventData.id = Date.now();
+      
+      events[dateKey].push(eventData);
+      saveData();
+      input.value = '';
+      render();
+    }
+
+    function renderTimeline() {
+      const dateKey = getDateKey(currentDate);
+      const dayEvents = events[dateKey] || [];
+      const timeline = document.getElementById('timeline');
+      const emptyState = document.getElementById('emptyState');
+      
+      if (dayEvents.length === 0) {
+        timeline.innerHTML = emptyState.outerHTML;
+        return;
+      }
+      
+      emptyState.style.display = 'none';
+      
+      timeline.innerHTML = dayEvents
+        .sort((a, b) => a.time.localeCompare(b.time))
+        .map(event => `
+          <div class="event ${event.category}" draggable="true" data-id="${event.id}">
+            <div class="event-time">${event.time}</div>
+            <div class="event-title">${event.title}</div>
+            <div class="event-category">${getCategoryLabel(event.category)}</div>
+          </div>
+        `).join('');
+      
+      // Re-attach drag events
+      document.querySelectorAll('.event').forEach(eventEl => {
+        eventEl.addEventListener('dragstart', handleDragStart);
+        eventEl.addEventListener('dragend', handleDragEnd);
+      });
+      
+      document.getElementById('eventCount').textContent = `${dayEvents.length} eventi`;
+    }
+
+    function getCategoryLabel(category) {
+      const labels = {
+        lavoro: '💼 Lavoro',
+        salute: '❤️ Salute', 
+        famiglia: '👨‍👩‍👧 Famiglia',
+        casa: '🏠 Casa'
+      };
+      return labels[category] || category;
+    }
+
+    function renderDate() {
+      const options = { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+      };
+      document.getElementById('currentDate').textContent = 
+        currentDate.toLocaleDateString('it-IT', { day: 'numeric', month: 'long', year: 'numeric' });
+      document.getElementById('timelineTitle').textContent = 
+        currentDate.toLocaleDateString('it-IT', options);
+    }
+
+    function renderInsights() {
+      const insightsEl = document.getElementById('insights');
+      const dateKey = getDateKey(currentDate);
+      const dayEvents = events[dateKey] || [];
+      
+      if (dayEvents.length === 0) {
+        insightsEl.innerHTML = `
+          <div class="insight">
+            <div class="insight-icon">🧠</div>
+            <div><strong>Analisi pattern:</strong> Aggiungi i primi eventi per vedere insights personalizzati</div>
+          </div>
+        `;
+        return;
+      }
+      
+      const totalEvents = dayEvents.length;
+      const workEvents = dayEvents.filter(e => e.category === 'lavoro').length;
+      const freeSlots = 24 - totalEvents * 0.5; // Rough estimate
+      
+      insightsEl.innerHTML = `
+        <div class="insight">
+          <div class="insight-icon">📊</div>
+          <div><strong>${totalEvents} eventi</strong> oggi (${Math.round(workEvents/totalEvents*100)}% lavoro)</div>
+        </div>
+        <div class="insight">
+          <div class="insight-icon">⏰</div>
+          <div><strong>~${Math.round(freeSlots)}h</strong> di tempo libero stimato</div>
+        </div>
+        <div class="insight">
+          <div class="insight-icon">💡</div>
+          <div><strong>Suggerimento:</strong> ${getSmartSuggestion(dayEvents)}</div>
+        </div>
+      `;
+    }
+
+    function getSmartSuggestion(events) {
+      const workCount = events.filter(e => e.category === 'lavoro').length;
+      if (workCount > 4) return "Considera buffer anti-stress tra riunioni";
+      if (events.length === 0) return "Inizia con 3-5 eventi chiave";
+      return "Ottimo ritmo! Mantieni la giornata bilanciata";
+    }
+
+    function exportData() {
+      const dataStr = JSON.stringify(events, null, 2);
+      const dataBlob = new Blob([dataStr], {type: 'application/json'});
+      const url = URL.createObjectURL(dataBlob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `sage-timeline-${new Date().toISOString().split('T')[0]}.json`;
+      link.click();
+    }
+
+    document.getElementById('importFile').addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          events = JSON.parse(e.target.result);
+          saveData();
+          render();
+        };
+        reader.readAsText(file);
+      }
+    });
+
+    // Drag & Drop
+    let draggedEvent = null;
+
+    function handleDragStart(e) {
+      draggedEvent = e.target;
+      e.target.classList.add('dragging');
+    }
+
+    function handleDragEnd(e) {
+      e.target.classList.remove('dragging');
+      draggedEvent = null;
+    }
+
+    // Enter per aggiungere evento
+    document.getElementById('quickInput').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') addQuickEvent();
+    });
+
+    function render() {
+      renderDate();
+      renderTimeline();
+      renderInsights();
+    }
+
+    // Init
+    render();
+  </script>
+</body>
+</html>
