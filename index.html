@@ -129,11 +129,18 @@
       line-height: 1.4;
     }
 
-    /* Add button */
-    .add-btn {
+    /* FAB + e Lista button */
+    .fab-container {
       position: fixed;
       bottom: 32px;
       right: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      z-index: 100;
+    }
+
+    .add-btn {
       width: 56px;
       height: 56px;
       background: linear-gradient(135deg, var(--mint-500), var(--mint-600));
@@ -147,30 +154,59 @@
       box-shadow: 0 8px 32px rgba(168, 196, 165, 0.4);
       cursor: pointer;
       transition: all 0.2s;
-      z-index: 100;
     }
 
-    .add-btn:active {
+    .lista-btn {
+      width: 56px;
+      height: 56px;
+      background: rgba(168, 196, 165, 0.7);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--mint-500);
+      border-radius: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      color: white;
+      box-shadow: 0 4px 20px rgba(168, 196, 165, 0.3);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .add-btn:active, .lista-btn:active {
       transform: scale(0.95);
     }
 
-    /* Products list */
+    .lista-btn.active {
+      background: var(--mint-600);
+      box-shadow: 0 6px 24px rgba(144, 179, 154, 0.4);
+    }
+
+    /* Products grid 3 per riga, più piccoli, bordi stondati Apple */
     .products-grid {
-      display: flex;
-      flex-direction: column;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
       gap: 12px;
+      margin-bottom: 20px;
     }
 
     .product-card {
       background: rgba(255,255,255,0.85);
       backdrop-filter: blur(20px);
       border: 1px solid var(--border);
-      border-radius: 24px;
-      padding: 20px;
+      border-radius: 20px; /* Più stondato Apple */
+      padding: 12px 8px; /* Più piccolo */
       cursor: pointer;
       transition: all 0.2s;
       position: relative;
       overflow: hidden;
+      height: 72px; /* Altezza fissa per griglia uniforme */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      text-align: center;
     }
 
     .product-card::before {
@@ -179,27 +215,30 @@
       top: 0;
       left: 0;
       right: 0;
-      height: 4px;
+      height: 3px;
       background: linear-gradient(90deg, var(--mint-500), var(--mint-600));
+      border-radius: 20px 20px 0 0;
     }
 
     .product-card:active {
-      transform: scale(0.98);
+      transform: scale(0.97);
       border-color: var(--mint-500);
+      box-shadow: 0 4px 16px rgba(168, 196, 165, 0.3);
     }
 
     .product-name {
-      font-size: 17px;
       font-weight: 600;
-      margin-bottom: 4px;
+      margin-bottom: 2px;
+      line-height: 1.2;
     }
 
     .product-category {
-      font-size: 15px;
+      font-size: 12px;
       color: var(--text-secondary);
+      opacity: 0.8;
     }
 
-    /* Lista section - overlay style */
+    /* Lista overlay */
     .lista-overlay {
       position: fixed;
       top: 0;
@@ -325,18 +364,26 @@
       to { transform: translateY(0); opacity: 1; }
     }
 
-    .product-card, .lista-overlay {
+    .product-card {
       animation: slideUp 0.3s ease;
     }
 
     @media (max-width: 480px) {
-      .container { padding: 0 4px; }
+      .products-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+      }
+      .product-card {
+        padding: 10px 6px;
+        height: 68px;
+        font-size: 13px;
+      }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <!-- Header dalla foto -->
+    <!-- Header -->
     <div class="header">
       <div class="status-dot"></div>
       <div class="header-text">Mint</div>
@@ -347,7 +394,7 @@
       </div>
     </div>
 
-    <!-- Search bar -->
+    <!-- Search -->
     <div class="search-container">
       <div class="search-icon">🔍</div>
       <input type="text" class="search-input" id="searchInput" placeholder="Cerca un drink..." />
@@ -355,12 +402,13 @@
 
     <p class="hint-text">Scrivi nome drink per cercarlo o usa categoria per trovarlo</p>
 
-    <!-- Lista prodotti principali -->
-    <div class="products-grid" id="productsGrid">
-      <!-- Prodotti dinamici -->
-    </div>
+    <!-- Griglia 3xN products -->
+    <div class="products-grid" id="productsGrid"></div>
+  </div>
 
-    <!-- FAB button -->
+  <!-- FAB + e Lista buttons -->
+  <div class="fab-container">
+    <button class="lista-btn" id="listaBtn" onclick="toggleLista()">🛒</button>
     <button class="add-btn" onclick="showAddProduct()">+</button>
   </div>
 
@@ -380,8 +428,9 @@
   </div>
 
   <script>
-    let products = JSON.parse(localStorage.getItem('mintProducts')) || ['Latte', 'Acqua', 'Succo'];
+    let products = JSON.parse(localStorage.getItem('mintProducts')) || ['Latte', 'Acqua', 'Succo', 'Birra', 'Vino', 'Soda'];
     let lista = JSON.parse(localStorage.getItem('mintLista')) || [];
+    let isListaOpen = false;
 
     function saveData() {
       localStorage.setItem('mintProducts', JSON.stringify(products));
@@ -394,33 +443,42 @@
       
       if (products.length === 0) {
         container.innerHTML = `
-          <div class="product-card empty-state">
-            <div class="empty-icon">🥛</div>
-            Nessun prodotto. Aggiungine uno!
+          <div class="product-card empty-state" style="grid-column: 1/-1;">
+            <div style="font-size: 48px; margin-bottom: 16px;">🥛</div>
+            Nessun prodotto
           </div>
         `;
         return;
       }
 
-      products.forEach((name, index) => {
+      products.forEach((name) => {
         const card = document.createElement('div');
         card.className = 'product-card';
         card.innerHTML = `
           <div class="product-name">${name}</div>
           <div class="product-category">Drink</div>
         `;
-        card.onclick = () => selectProduct(name);
+        card.onclick = () => toggleProductInLista(name);
         container.appendChild(card);
       });
     }
 
-    function selectProduct(name) {
-      if (!lista.includes(name)) {
+    function toggleProductInLista(name) {
+      const index = lista.indexOf(name);
+      if (index > -1) {
+        lista.splice(index, 1);
+      } else {
         lista.push(name);
-        saveData();
       }
-      renderLista();
-      document.getElementById('listaOverlay').classList.add('active');
+      saveData();
+      updateListaBtn();
+      if (isListaOpen) renderLista();
+    }
+
+    function updateListaBtn() {
+      const btn = document.getElementById('listaBtn');
+      btn.textContent = lista.length > 0 ? `🛒 ${lista.length}` : '🛒';
+      btn.classList.toggle('active', lista.length > 0);
     }
 
     function renderLista() {
@@ -430,7 +488,7 @@
           <div class="empty-state">
             <div class="empty-icon">📝</div>
             La lista è vuota<br>
-            <small>Seleziona prodotti dalla home</small>
+            <small>Seleziona prodotti dalla griglia</small>
           </div>
         `;
         return;
@@ -439,8 +497,32 @@
       container.innerHTML = lista.map(name => `
         <div class="lista-item">
           <div class="lista-item-name">${name}</div>
+          <div>✓</div>
         </div>
       `).join('');
+    }
+
+    function toggleLista() {
+      isListaOpen = !isListaOpen;
+      const overlay = document.getElementById('listaOverlay');
+      if (isListaOpen) {
+        renderLista();
+        overlay.classList.add('active');
+      } else {
+        overlay.classList.remove('active');
+      }
+    }
+
+    function closeLista() {
+      isListaOpen = false;
+      document.getElementById('listaOverlay').classList.remove('active');
+    }
+
+    function clearLista() {
+      lista = [];
+      saveData();
+      renderLista();
+      updateListaBtn();
     }
 
     function showAddProduct() {
@@ -452,26 +534,35 @@
       }
     }
 
-    function closeLista() {
-      document.getElementById('listaOverlay').classList.remove('active');
-    }
-
-    function clearLista() {
-      lista = [];
-      saveData();
-      renderLista();
-    }
-
-    // Search
+    // Search filter
     document.getElementById('searchInput').addEventListener('input', (e) => {
       const term = e.target.value.toLowerCase();
+      const filteredContainer = document.getElementById('productsGrid');
+      filteredContainer.innerHTML = '';
+      
       const filtered = products.filter(p => p.toLowerCase().includes(term));
-      // Re-render con filtered (semplificato)
-      renderProducts(); // Per ora mostra tutti, filtra dopo
+      
+      if (filtered.length === 0 && term) {
+        filteredContainer.innerHTML = `
+          <div class="product-card empty-state" style="grid-column: 1/-1;">
+            Nessun risultato per "${term}"
+          </div>
+        `;
+        return;
+      }
+      
+      filtered.forEach(name => {
+        const card = document.createElement('div');
+        card.className = 'product-card';
+        card.innerHTML = `<div class="product-name">${name}</div><div class="product-category">Drink</div>`;
+        card.onclick = () => toggleProductInLista(name);
+        filteredContainer.appendChild(card);
+      });
     });
 
     // Init
     renderProducts();
+    updateListaBtn();
   </script>
 </body>
 </html>
