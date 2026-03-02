@@ -21,6 +21,23 @@
       --border: rgba(168, 196, 165, 0.3);
     }
 
+    /* Dark mode */
+    [data-theme="dark"] {
+      --mint-50: #1a1f19;
+      --mint-100: #253228;
+      --mint-200: #314237;
+      --mint-300: #3d5046;
+      --mint-400: #4a695b;
+      --mint-500: #67837a;
+      --mint-600: #739a8e;
+      --mint-700: #7fa399;
+      --mint-800: #8bb2a4;
+      --mint-900: #97c2af;
+      --text-primary: #e8f5e8;
+      --text-secondary: #c0d8c0;
+      --border: rgba(151, 194, 175, 0.2);
+    }
+
     * {
       margin: 0;
       padding: 0;
@@ -34,6 +51,7 @@
       min-height: 100vh;
       padding: 20px 16px;
       overflow-x: hidden;
+      transition: all 0.3s ease;
     }
 
     .container {
@@ -41,7 +59,7 @@
       margin: 0 auto;
     }
 
-    /* Header Mint Offline */
+    /* Header */
     .header {
       display: flex;
       align-items: center;
@@ -89,7 +107,7 @@
       transform: scale(0.95);
     }
 
-    /* Search bar */
+    /* Search */
     .search-container {
       position: relative;
       margin-bottom: 20px;
@@ -104,6 +122,10 @@
       border-radius: 20px;
       font-size: 17px;
       color: var(--text-primary);
+    }
+
+    [data-theme="dark"] .search-input {
+      background: rgba(255,255,255,0.1);
     }
 
     .search-input:focus {
@@ -129,7 +151,7 @@
       line-height: 1.4;
     }
 
-    /* FAB + e Lista button */
+    /* FAB */
     .fab-container {
       position: fixed;
       bottom: 32px;
@@ -140,41 +162,30 @@
       z-index: 100;
     }
 
-    .add-btn {
+    .add-btn, .lista-btn {
       width: 56px;
       height: 56px;
-      background: linear-gradient(135deg, var(--mint-500), var(--mint-600));
-      border: none;
       border-radius: 28px;
+      border: none;
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 20px;
       color: white;
-      box-shadow: 0 8px 32px rgba(168, 196, 165, 0.4);
       cursor: pointer;
       transition: all 0.2s;
+    }
+
+    .add-btn {
+      background: linear-gradient(135deg, var(--mint-500), var(--mint-600));
+      box-shadow: 0 8px 32px rgba(168, 196, 165, 0.4);
     }
 
     .lista-btn {
-      width: 56px;
-      height: 56px;
       background: rgba(168, 196, 165, 0.7);
       backdrop-filter: blur(20px);
       border: 1px solid var(--mint-500);
-      border-radius: 28px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 20px;
-      color: white;
       box-shadow: 0 4px 20px rgba(168, 196, 165, 0.3);
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .add-btn:active, .lista-btn:active {
-      transform: scale(0.95);
     }
 
     .lista-btn.active {
@@ -182,7 +193,11 @@
       box-shadow: 0 6px 24px rgba(144, 179, 154, 0.4);
     }
 
-    /* Products grid 3 per riga, più piccoli, bordi stondati Apple */
+    .add-btn:active, .lista-btn:active {
+      transform: scale(0.95);
+    }
+
+    /* Products grid */
     .products-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -209,6 +224,10 @@
       text-align: center;
     }
 
+    [data-theme="dark"] .product-card {
+      background: rgba(255,255,255,0.1);
+    }
+
     .product-card::before {
       content: '';
       position: absolute;
@@ -223,7 +242,6 @@
     .product-card:active {
       transform: scale(0.97);
       border-color: var(--mint-500);
-      box-shadow: 0 4px 16px rgba(168, 196, 165, 0.3);
     }
 
     .product-name {
@@ -242,7 +260,6 @@
     .edit-mode .product-card {
       padding: 8px 8px 4px;
       height: 80px;
-      position: relative;
     }
 
     .edit-controls {
@@ -273,22 +290,13 @@
       transition: all 0.2s;
     }
 
-    .edit-btn.edit {
-      background: var(--mint-400);
-      color: var(--text-primary);
-    }
+    .edit-btn.edit { background: var(--mint-400); color: var(--text-primary); }
+    .edit-btn.delete { background: #ef4444; color: white; }
 
-    .edit-btn.delete {
-      background: #ef4444;
-      color: white;
-    }
+    .edit-btn:active { transform: scale(0.9); }
 
-    .edit-btn:active {
-      transform: scale(0.9);
-    }
-
-    /* Lista overlay */
-    .lista-overlay {
+    /* Overlays */
+    .overlay {
       position: fixed;
       top: 0;
       left: 0;
@@ -303,11 +311,9 @@
       padding: 20px;
     }
 
-    .lista-overlay.active {
-      display: flex;
-    }
+    .overlay.active { display: flex; }
 
-    .lista-container {
+    .overlay-container {
       background: rgba(255,255,255,0.95);
       backdrop-filter: blur(30px);
       border-radius: 32px;
@@ -318,6 +324,11 @@
       position: relative;
     }
 
+    [data-theme="dark"] .overlay-container {
+      background: rgba(26, 31, 25, 0.95);
+    }
+
+    /* Lista */
     .lista-header {
       padding: 28px 24px 20px;
       border-bottom: 1px solid var(--border);
@@ -347,9 +358,7 @@
       border-bottom: 1px solid rgba(168, 196, 165, 0.1);
     }
 
-    .lista-item:last-child {
-      border-bottom: none;
-    }
+    .lista-item:last-child { border-bottom: none; }
 
     .lista-item-name {
       font-size: 17px;
@@ -360,14 +369,16 @@
     .lista-buttons {
       position: sticky;
       bottom: 0;
-      left: 0;
-      right: 0;
       background: rgba(255,255,255,0.95);
       backdrop-filter: blur(20px);
       padding: 24px;
       border-top: 1px solid var(--border);
       display: flex;
       gap: 12px;
+    }
+
+    [data-theme="dark"] .lista-buttons {
+      background: rgba(26, 31, 25, 0.95);
     }
 
     .btn {
@@ -392,7 +403,87 @@
       color: white;
     }
 
-    .btn:active {
+    /* Settings */
+    .settings-title {
+      font-size: 24px;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 32px;
+      color: var(--text-primary);
+    }
+
+    .settings-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .settings-item:last-child { border-bottom: none; }
+
+    .settings-label {
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .toggle-switch {
+      position: relative;
+      width: 52px;
+      height: 32px;
+      background: var(--mint-200);
+      border-radius: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: 1px solid var(--border);
+    }
+
+    .toggle-switch.active {
+      background: var(--mint-500);
+    }
+
+    .toggle-knob {
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 28px;
+      height: 28px;
+      background: white;
+      border-radius: 50%;
+      transition: transform 0.3s ease;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+
+    .toggle-switch.active .toggle-knob {
+      transform: translateX(20px);
+    }
+
+    .btn-action {
+      padding: 12px 20px;
+      border-radius: 20px;
+      border: none;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-backup {
+      background: linear-gradient(135deg, var(--mint-400), var(--mint-500));
+      color: var(--text-primary);
+    }
+
+    .btn-reset {
+      background: #f87171;
+      color: white;
+      padding: 12px 16px;
+    }
+
+    .btn-action:active {
       transform: scale(0.98);
     }
 
@@ -402,71 +493,73 @@
       color: var(--text-secondary);
     }
 
-    .empty-icon {
-      font-size: 48px;
-      margin-bottom: 16px;
-    }
-
-    /* Animations */
-    @keyframes slideUp {
-      from { transform: translateY(20px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
-    }
-
-    .product-card {
-      animation: slideUp 0.3s ease;
-    }
-
     @media (max-width: 480px) {
-      .products-grid {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 10px;
-      }
-      .product-card {
-        padding: 10px 6px;
-        height: 68px;
-        font-size: 13px;
-      }
-      .edit-mode .product-card {
-        height: 76px;
-      }
+      .products-grid { gap: 10px; }
+      .product-card { padding: 10px 6px; height: 68px; font-size: 13px; }
+      .edit-mode .product-card { height: 76px; }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <!-- Header -->
     <div class="header">
       <div class="status-dot"></div>
       <div class="header-text">Mint</div>
       <span>Offline</span>
       <div class="header-buttons">
         <button class="header-btn" onclick="toggleEditMode()">✏️</button>
-        <button class="header-btn">⚙️</button>
+        <button class="header-btn" onclick="toggleSettings()">⚙️</button>
       </div>
     </div>
 
-    <!-- Search -->
     <div class="search-container">
       <div class="search-icon">🔍</div>
       <input type="text" class="search-input" id="searchInput" placeholder="Cerca un drink..." />
     </div>
 
     <p class="hint-text">Scrivi nome drink per cercarlo o usa categoria per trovarlo</p>
-
-    <!-- Griglia 3xN products -->
     <div class="products-grid" id="productsGrid"></div>
   </div>
 
-  <!-- FAB + e Lista buttons -->
   <div class="fab-container">
     <button class="lista-btn" id="listaBtn" onclick="toggleLista()">🛒</button>
     <button class="add-btn" onclick="showAddProduct()">+</button>
   </div>
 
-  <!-- Lista overlay -->
-  <div class="lista-overlay" id="listaOverlay">
-    <div class="lista-container">
+  <!-- Settings Overlay -->
+  <div class="overlay" id="settingsOverlay">
+    <div class="overlay-container">
+      <div class="settings-title">Impostazioni</div>
+      
+      <div class="settings-item">
+        <div class="settings-label">Modalità Scura</div>
+        <div class="toggle-switch" id="darkModeToggle" onclick="toggleDarkMode()">
+          <div class="toggle-knob"></div>
+        </div>
+      </div>
+
+      <div class="settings-item">
+        <div class="settings-label">Vibrazioni</div>
+        <div class="toggle-switch" id="vibrationToggle" onclick="toggleVibration()">
+          <div class="toggle-knob"></div>
+        </div>
+      </div>
+
+      <div class="settings-item">
+        <div class="settings-label">Backup Dati</div>
+        <button class="btn-action btn-backup" onclick="backupData()">💾 Backup</button>
+      </div>
+
+      <div class="settings-item">
+        <div class="settings-label" style="opacity: 0.7;">Reset Lista</div>
+        <button class="btn-action btn-reset" onclick="resetListaConfirm()">🗑️</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lista Overlay -->
+  <div class="overlay" id="listaOverlay">
+    <div class="overlay-container lista-container">
       <div class="lista-header">
         <div class="lista-title">Lista</div>
         <div class="lista-subtitle">Prodotti selezionati</div>
@@ -480,23 +573,38 @@
   </div>
 
   <script>
+    // State
     let products = JSON.parse(localStorage.getItem('mintProducts')) || ['Acqua', 'Birra', 'Latte', 'Soda', 'Succo', 'Vino'];
     let lista = JSON.parse(localStorage.getItem('mintLista')) || [];
     let isListaOpen = false;
     let isEditMode = false;
     let currentSearchTerm = '';
+    let isDarkMode = localStorage.getItem('mintDarkMode') === 'true';
+    let isVibrationEnabled = localStorage.getItem('mintVibration') !== 'false';
 
-    // Ordina i prodotti alfabeticamente all'avvio
+    // Init
     products.sort((a, b) => a.localeCompare(b, 'it'));
+    
+    if (isDarkMode) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      document.getElementById('darkModeToggle').classList.add('active');
+    }
+    document.getElementById('vibrationToggle').classList.toggle('active', isVibrationEnabled);
 
     function saveData() {
       localStorage.setItem('mintProducts', JSON.stringify(products));
       localStorage.setItem('mintLista', JSON.stringify(lista));
     }
 
-    function sortProducts() {
-      products.sort((a, b) => a.localeCompare(b, 'it'));
-      saveData();
+    function saveSettings() {
+      localStorage.setItem('mintDarkMode', isDarkMode);
+      localStorage.setItem('mintVibration', isVibrationEnabled);
+    }
+
+    function vibrate(pattern = 100) {
+      if (isVibrationEnabled && 'vibrate' in navigator) {
+        navigator.vibrate(pattern);
+      }
     }
 
     function renderProducts() {
@@ -526,14 +634,12 @@
           <div class="product-category">Drink</div>
           ${isEditMode ? `
             <div class="edit-controls">
-              <button class="edit-btn edit" onclick="editProduct('${name.replace(/'/g, "\\'")}')" title="Modifica">✏️</button>
-              <button class="edit-btn delete" onclick="deleteProduct('${name.replace(/'/g, "\\'")}')" title="Elimina">🗑️</button>
+              <button class="edit-btn edit" onclick="editProduct('${name.replace(/'/g, "\\\\'")}')">✏️</button>
+              <button class="edit-btn delete" onclick="deleteProduct('${name.replace(/'/g, "\\\\'")}')">🗑️</button>
             </div>
           ` : ''}
         `;
-        if (!isEditMode) {
-          card.onclick = () => toggleProductInLista(name);
-        }
+        if (!isEditMode) card.onclick = () => toggleProductInLista(name);
         container.appendChild(card);
       });
     }
@@ -542,8 +648,10 @@
       const index = lista.indexOf(name);
       if (index > -1) {
         lista.splice(index, 1);
+        vibrate(50);
       } else {
         lista.push(name);
+        vibrate([100, 50, 100]);
       }
       saveData();
       updateListaBtn();
@@ -562,13 +670,11 @@
         container.innerHTML = `
           <div class="empty-state">
             <div class="empty-icon">📝</div>
-            La lista è vuota<br>
-            <small>Seleziona prodotti dalla griglia</small>
+            La lista è vuota<br><small>Seleziona prodotti dalla griglia</small>
           </div>
         `;
         return;
       }
-
       container.innerHTML = lista.map(name => `
         <div class="lista-item">
           <div class="lista-item-name">${name}</div>
@@ -579,13 +685,8 @@
 
     function toggleLista() {
       isListaOpen = !isListaOpen;
-      const overlay = document.getElementById('listaOverlay');
-      if (isListaOpen) {
-        renderLista();
-        overlay.classList.add('active');
-      } else {
-        overlay.classList.remove('active');
-      }
+      document.getElementById('listaOverlay').classList.toggle('active', isListaOpen);
+      if (isListaOpen) renderLista();
     }
 
     function closeLista() {
@@ -598,14 +699,17 @@
       saveData();
       renderLista();
       updateListaBtn();
+      vibrate(400);
     }
 
     function showAddProduct() {
       const name = prompt('Nome nuovo prodotto:');
       if (name && name.trim() && !products.includes(name.trim())) {
         products.push(name.trim());
-        sortProducts();
+        products.sort((a, b) => a.localeCompare(b, 'it'));
+        saveData();
         renderProducts();
+        vibrate(200);
       }
     }
 
@@ -615,15 +719,13 @@
         const index = products.indexOf(oldName);
         if (index > -1) {
           products[index] = newName.trim();
-          sortProducts();
-          renderProducts();
-          // Aggiorna anche la lista se contiene il vecchio nome
           const listaIndex = lista.indexOf(oldName);
-          if (listaIndex > -1) {
-            lista[listaIndex] = newName.trim();
-            saveData();
-            if (isListaOpen) renderLista();
-          }
+          if (listaIndex > -1) lista[listaIndex] = newName.trim();
+          products.sort((a, b) => a.localeCompare(b, 'it'));
+          saveData();
+          renderProducts();
+          if (isListaOpen) renderLista();
+          vibrate(150);
         }
       }
     }
@@ -633,15 +735,13 @@
         const index = products.indexOf(name);
         if (index > -1) {
           products.splice(index, 1);
-          // Rimuovi dalla lista se presente
           const listaIndex = lista.indexOf(name);
-          if (listaIndex > -1) {
-            lista.splice(listaIndex, 1);
-          }
+          if (listaIndex > -1) lista.splice(listaIndex, 1);
           saveData();
           renderProducts();
           updateListaBtn();
           if (isListaOpen) renderLista();
+          vibrate(300);
         }
       }
     }
@@ -652,13 +752,68 @@
       renderProducts();
     }
 
-    // Search filter
+    function toggleDarkMode() {
+      isDarkMode = !isDarkMode;
+      document.documentElement.toggleAttribute('data-theme', isDarkMode);
+      document.getElementById('darkModeToggle').classList.toggle('active', isDarkMode);
+      saveSettings();
+      vibrate(100);
+    }
+
+    function toggleVibration() {
+      isVibrationEnabled = !isVibrationEnabled;
+      document.getElementById('vibrationToggle').classList.toggle('active', isVibrationEnabled);
+      saveSettings();
+      vibrate(isVibrationEnabled ? 200 : 0);
+    }
+
+    function toggleSettings() {
+      document.getElementById('settingsOverlay').classList.toggle('active');
+    }
+
+    function backupData() {
+      const data = {
+        products,
+        lista,
+        settings: { darkMode: isDarkMode, vibration: isVibrationEnabled },
+        timestamp: new Date().toLocaleString('it-IT')
+      };
+      const dataStr = JSON.stringify(data, null, 2);
+      const blob = new Blob([dataStr], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `mint-backup-${new Date().toISOString().split('T')[0]}.json`;
+      link.click();
+      URL.revokeObjectURL(url);
+      vibrate(200);
+      document.getElementById('settingsOverlay').classList.remove('active');
+    }
+
+    function resetListaConfirm() {
+      if (confirm('Vuoi davvero azzerare la lista?')) {
+        clearLista();
+        document.getElementById('settingsOverlay').classList.remove('active');
+      }
+    }
+
+    // Event listeners
     document.getElementById('searchInput').addEventListener('input', (e) => {
       currentSearchTerm = e.target.value;
       renderProducts();
     });
 
-    // Init
+    // Close overlays clicking outside
+    document.querySelectorAll('.overlay').forEach(overlay => {
+      overlay.addEventListener('click', (e) => {
+        if (e.target.classList.contains('overlay')) {
+          e.target.classList.remove('active');
+          if (overlay.id === 'listaOverlay') isListaOpen = false;
+        }
+      });
+    });
+
+    // Init render
     renderProducts();
     updateListaBtn();
   </script>
