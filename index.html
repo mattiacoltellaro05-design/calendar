@@ -57,6 +57,7 @@
       gap: 12px;
       margin-bottom: 28px;
       padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
     }
 
     .status-dot {
@@ -98,7 +99,10 @@
       transform: scale(0.95);
     }
 
-    .search-container { position: relative; margin-bottom: 20px; }
+    .search-container { 
+      position: relative; 
+      margin-bottom: 20px; 
+    }
 
     .search-input {
       width: 100%;
@@ -111,7 +115,9 @@
       color: var(--text-primary);
     }
 
-    [data-theme="dark"] .search-input { background: rgba(255,255,255,0.1); }
+    [data-theme="dark"] .search-input { 
+      background: rgba(255,255,255,0.1); 
+    }
 
     .search-input:focus {
       outline: none;
@@ -205,7 +211,9 @@
       text-align: center;
     }
 
-    [data-theme="dark"] .product-card { background: rgba(255,255,255,0.1); }
+    [data-theme="dark"] .product-card { 
+      background: rgba(255,255,255,0.1); 
+    }
 
     .product-card::before {
       content: '';
@@ -223,10 +231,23 @@
       border-color: var(--mint-500);
     }
 
-    .product-name { font-weight: 600; margin-bottom: 2px; line-height: 1.2; }
-    .product-category { font-size: 12px; color: var(--text-secondary); opacity: 0.8; }
+    .product-name { 
+      font-weight: 600; 
+      margin-bottom: 2px; 
+      line-height: 1.2; 
+    }
 
-    .edit-mode .product-card { padding: 8px 8px 4px; height: 80px; }
+    .product-category { 
+      font-size: 12px; 
+      color: var(--text-secondary); 
+      opacity: 0.8; 
+    }
+
+    .edit-mode .product-card { 
+      padding: 8px 8px 4px; 
+      height: 80px; 
+    }
+
     .edit-controls {
       position: absolute;
       bottom: 4px;
@@ -237,6 +258,7 @@
       opacity: 0;
       transition: opacity 0.2s;
     }
+
     .edit-mode .edit-controls { opacity: 1; }
 
     .edit-btn {
@@ -252,11 +274,19 @@
       transition: all 0.2s;
     }
 
-    .edit-btn.edit { background: var(--mint-400); color: var(--text-primary); }
-    .edit-btn.delete { background: #ef4444; color: white; }
+    .edit-btn.edit { 
+      background: var(--mint-400); 
+      color: var(--text-primary); 
+    }
+
+    .edit-btn.delete { 
+      background: #ef4444; 
+      color: white; 
+    }
+
     .edit-btn:active { transform: scale(0.9); }
 
-    /* OVERLAY MIGLIORATO - CENTRATO */
+    /* Overlay */
     .overlay {
       position: fixed;
       top: 0;
@@ -279,18 +309,18 @@
       backdrop-filter: blur(30px);
       border-radius: 32px;
       width: 100%;
-      max-width: 360px; /* Ridotto per centrare meglio */
+      max-width: 360px;
       max-height: 80vh;
       overflow-y: auto;
       position: relative;
-      padding: 8px; /* Padding interno per centrare contenuto */
+      padding: 8px;
     }
 
     [data-theme="dark"] .overlay-container {
       background: rgba(26, 31, 25, 0.95);
     }
 
-    /* Settings - SPAZIATURA MIGLIORATA */
+    /* Settings */
     .settings-title {
       font-size: 24px;
       font-weight: 700;
@@ -304,9 +334,9 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 20px 24px; /* Più padding laterale */
+      padding: 20px 24px;
       border-bottom: 1px solid var(--border);
-      margin: 0 8px; /* Margini per centrare */
+      margin: 0 8px;
       border-radius: 16px;
       margin-bottom: 8px;
       background: rgba(255,255,255,0.5);
@@ -315,8 +345,6 @@
     [data-theme="dark"] .settings-item {
       background: rgba(255,255,255,0.1);
     }
-
-    .settings-item:last-child { border-bottom: none; }
 
     .settings-label {
       font-size: 17px;
@@ -335,7 +363,9 @@
       border: 1px solid var(--border);
     }
 
-    .toggle-switch.active { background: var(--mint-500); }
+    .toggle-switch.active {
+      background: var(--mint-500);
+    }
 
     .toggle-knob {
       position: absolute;
@@ -349,7 +379,9 @@
       box-shadow: 0 2px 8px rgba(0,0,0,0.2);
     }
 
-    .toggle-switch.active .toggle-knob { transform: translateX(20px); }
+    .toggle-switch.active .toggle-knob {
+      transform: translateX(20px);
+    }
 
     .btn-action {
       padding: 12px 20px;
@@ -377,19 +409,42 @@
 
     .btn-action:active { transform: scale(0.98); }
 
-    /* Lista styles (invariati) */
-    .lista-header { padding: 28px 24px 20px; border-bottom: 1px solid var(--border); }
-    .lista-title { font-size: 24px; font-weight: 700; text-align: center; margin-bottom: 8px; }
-    .lista-subtitle { text-align: center; font-size: 15px; color: var(--text-secondary); }
+    /* Lista */
+    .lista-header { 
+      padding: 28px 24px 20px; 
+      border-bottom: 1px solid var(--border); 
+    }
+
+    .lista-title { 
+      font-size: 24px; 
+      font-weight: 700; 
+      text-align: center; 
+      margin-bottom: 8px; 
+    }
+
+    .lista-subtitle { 
+      text-align: center; 
+      font-size: 15px; 
+      color: var(--text-secondary); 
+    }
+
     .lista-items { padding: 0 24px 28px; }
+
     .lista-item {
       display: flex;
       align-items: center;
       padding: 16px 0;
       border-bottom: 1px solid rgba(168, 196, 165, 0.1);
     }
+
     .lista-item:last-child { border-bottom: none; }
-    .lista-item-name { font-size: 17px; font-weight: 600; flex: 1; }
+
+    .lista-item-name { 
+      font-size: 17px; 
+      font-weight: 600; 
+      flex: 1; 
+    }
+
     .lista-buttons {
       position: sticky;
       bottom: 0;
@@ -400,14 +455,40 @@
       display: flex;
       gap: 12px;
     }
-    [data-theme="dark"] .lista-buttons { background: rgba(26, 31, 25, 0.95); }
-    .btn { flex: 1; padding: 16px; border: none; border-radius: 20px; font-size: 17px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
-    .btn-indietro { background: var(--mint-200); color: var(--text-primary); border: 1px solid var(--mint-400); }
-    .btn-fatto { background: linear-gradient(135deg, var(--mint-500), var(--mint-600)); color: white; }
+
+    [data-theme="dark"] .lista-buttons { 
+      background: rgba(26, 31, 25, 0.95); 
+    }
+
+    .btn {
+      flex: 1;
+      padding: 16px;
+      border: none;
+      border-radius: 20px;
+      font-size: 17px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-indietro {
+      background: var(--mint-200);
+      color: var(--text-primary);
+      border: 1px solid var(--mint-400);
+    }
+
+    .btn-fatto {
+      background: linear-gradient(135deg, var(--mint-500), var(--mint-600));
+      color: white;
+    }
+
     .btn:active { transform: scale(0.98); }
 
-    .empty-state { text-align: center; padding: 60px 24px; color: var(--text-secondary); }
-    .empty-icon { font-size: 48px; margin-bottom: 16px; }
+    .empty-state { 
+      text-align: center; 
+      padding: 60px 24px; 
+      color: var(--text-secondary); 
+    }
 
     @media (max-width: 480px) {
       .products-grid { gap: 10px; }
@@ -442,7 +523,7 @@
     <button class="add-btn" onclick="showAddProduct()">+</button>
   </div>
 
-  <!-- Settings Overlay -->
+  <!-- Settings -->
   <div class="overlay" id="settingsOverlay">
     <div class="overlay-container">
       <div class="settings-title">Impostazioni</div>
@@ -473,9 +554,9 @@
     </div>
   </div>
 
-  <!-- Lista Overlay -->
+  <!-- Lista -->
   <div class="overlay" id="listaOverlay">
-    <div class="overlay-container lista-container">
+    <div class="overlay-container">
       <div class="lista-header">
         <div class="lista-title">Lista</div>
         <div class="lista-subtitle">Prodotti selezionati</div>
@@ -489,7 +570,7 @@
   </div>
 
   <script>
-    // State
+    // Stato app
     let products = JSON.parse(localStorage.getItem('mintProducts')) || ['Acqua', 'Birra', 'Latte', 'Soda', 'Succo', 'Vino'];
     let lista = JSON.parse(localStorage.getItem('mintLista')) || [];
     let isListaOpen = false;
@@ -498,22 +579,28 @@
     let isDarkMode = localStorage.getItem('mintDarkMode') === 'true';
     let isVibrationEnabled = localStorage.getItem('mintVibration') !== 'false';
 
-    // Init
+    // Inizializzazione
     products.sort((a, b) => a.localeCompare(b, 'it'));
-    updateSettingsToggles();
+    initApp();
 
-    function updateSettingsToggles() {
-      const darkToggle = document.getElementById('darkModeToggle');
-      const vibrationToggle = document.getElementById('vibrationToggle');
-      
-      darkToggle.classList.toggle('active', isDarkMode);
-      vibrationToggle.classList.toggle('active', isVibrationEnabled);
-      
+    function initApp() {
+      updateTheme();
+      updateToggles();
+      renderProducts();
+      updateListaBtn();
+    }
+
+    function updateTheme() {
       if (isDarkMode) {
         document.documentElement.setAttribute('data-theme', 'dark');
       } else {
         document.documentElement.removeAttribute('data-theme');
       }
+    }
+
+    function updateToggles() {
+      document.getElementById('darkModeToggle').classList.toggle('active', isDarkMode);
+      document.getElementById('vibrationToggle').classList.toggle('active', isVibrationEnabled);
     }
 
     function saveData() {
@@ -535,12 +622,12 @@
     function renderProducts() {
       const container = document.getElementById('productsGrid');
       container.innerHTML = '';
-      
+
       let displayProducts = products;
       if (currentSearchTerm) {
         displayProducts = products.filter(p => p.toLowerCase().includes(currentSearchTerm.toLowerCase()));
       }
-      
+
       if (displayProducts.length === 0) {
         container.innerHTML = `
           <div class="product-card empty-state" style="grid-column: 1/-1;">
@@ -564,7 +651,9 @@
             </div>
           ` : ''}
         `;
-        if (!isEditMode) card.onclick = () => toggleProductInLista(name);
+        if (!isEditMode) {
+          card.onclick = () => toggleProductInLista(name);
+        }
         container.appendChild(card);
       });
     }
@@ -610,7 +699,8 @@
 
     function toggleLista() {
       isListaOpen = !isListaOpen;
-      document.getElementById('listaOverlay').classList.toggle('active', isListaOpen);
+      const overlay = document.getElementById('listaOverlay');
+      overlay.classList.toggle('active', isListaOpen);
       if (isListaOpen) renderLista();
     }
 
@@ -677,19 +767,21 @@
       renderProducts();
     }
 
-    // TOGGLE FUNZIONANTI
     function toggleDarkMode() {
       isDarkMode = !isDarkMode;
-      updateSettingsToggles();
+      updateTheme();
+      updateToggles();
       saveSettings();
       vibrate(100);
     }
 
     function toggleVibration() {
       isVibrationEnabled = !isVibrationEnabled;
-      updateSettingsToggles();
+      updateToggles();
       saveSettings();
-      if (isVibrationEnabled) vibrate(200);
+      if (isVibrationEnabled) {
+        vibrate(200);
+      }
     }
 
     function toggleSettings() {
@@ -700,9 +792,13 @@
       const data = {
         products,
         lista,
-        settings: { darkMode: isDarkMode, vibration: isVibrationEnabled },
+        settings: { 
+          darkMode: isDarkMode, 
+          vibration: isVibrationEnabled 
+        },
         timestamp: new Date().toLocaleString('it-IT')
       };
+      
       const dataStr = JSON.stringify(data, null, 2);
       const blob = new Blob([dataStr], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
@@ -722,16 +818,16 @@
       }
     }
 
-    // Event listeners
+    // Event Listeners
     document.getElementById('searchInput').addEventListener('input', (e) => {
       currentSearchTerm = e.target.value;
       renderProducts();
     });
 
-    // Click sui toggle switches
     document.getElementById('darkModeToggle').addEventListener('click', toggleDarkMode);
     document.getElementById('vibrationToggle').addEventListener('click', toggleVibration);
 
+    // Chiudi overlay cliccando fuori
     document.querySelectorAll('.overlay').forEach(overlay => {
       overlay.addEventListener('click', (e) => {
         if (e.target.classList.contains('overlay')) {
@@ -740,10 +836,6 @@
         }
       });
     });
-
-    // Init
-    renderProducts();
-    updateListaBtn();
   </script>
 </body>
 </html>
