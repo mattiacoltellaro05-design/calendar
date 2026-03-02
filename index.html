@@ -3,18 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mint Prodotti - Gestione Lista</title>
+  <title>Mint</title>
   <style>
     :root {
-      --mint-light: #d4e4d8;
-      --mint: #a8c4a5;
-      --mint-medium: #90b39a;
-      --mint-dark: #7d9a7a;
-      --mint-darker: #5e7a5a;
-      --bg: #f8faf7;
-      --text: #2d4a2d;
-      --border: #e0e8e0;
-      --shadow: 0 4px 20px rgba(125, 154, 122, 0.15);
+      --mint-50: #f8faf7;
+      --mint-100: #eaf3ea;
+      --mint-200: #d8e8d8;
+      --mint-300: #c5ddc5;
+      --mint-400: #b3d2b3;
+      --mint-500: #a8c4a5;
+      --mint-600: #90b39a;
+      --mint-700: #7d9a7a;
+      --mint-800: #6a8570;
+      --mint-900: #5e7a5a;
+      --text-primary: #1a3c1a;
+      --text-secondary: #4a6f4a;
+      --border: rgba(168, 196, 165, 0.3);
     }
 
     * {
@@ -24,229 +28,359 @@
     }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: linear-gradient(135deg, var(--bg) 0%, var(--mint-light) 100%);
+      font-family: -apple-system, SF Pro Display, HelveticaNeue, sans-serif;
+      background: var(--mint-50);
+      color: var(--text-primary);
       min-height: 100vh;
-      color: var(--text);
-      padding: 20px;
+      padding: 20px 16px;
+      overflow-x: hidden;
     }
 
     .container {
-      max-width: 500px;
+      max-width: 390px;
       margin: 0 auto;
     }
 
+    /* Header Mint Offline */
     .header {
-      text-align: center;
-      margin-bottom: 30px;
-    }
-
-    h1 {
-      font-size: 2rem;
-      font-weight: 700;
-      background: linear-gradient(135deg, var(--mint-darker), var(--mint));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin-bottom: 10px;
-    }
-
-    .nav {
       display: flex;
-      gap: 10px;
-      margin-bottom: 30px;
-      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
     }
 
-    .nav-btn {
-      flex: 1;
-      padding: 16px 20px;
-      background: rgba(168, 196, 165, 0.8);
-      border: 1px solid var(--mint);
-      border-radius: 16px;
-      font-size: 1.1rem;
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      background: #10b981;
+      border-radius: 50%;
+    }
+
+    .header-text {
+      font-size: 18px;
       font-weight: 600;
-      color: var(--text);
+      color: var(--text-secondary);
+    }
+
+    .header-buttons {
+      margin-left: auto;
+      display: flex;
+      gap: 8px;
+    }
+
+    .header-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 18px;
+      background: var(--mint-400);
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      color: var(--text-primary);
       cursor: pointer;
-      transition: all 0.3s ease;
-      backdrop-filter: blur(10px);
+      transition: all 0.2s;
     }
 
-    .nav-btn.active {
-      background: var(--mint);
-      box-shadow: var(--shadow);
-      transform: translateY(-2px);
+    .header-btn:active {
+      background: var(--mint-500);
+      transform: scale(0.95);
     }
 
-    .nav-btn:not(.active) {
-      opacity: 0.7;
-    }
-
-    .section {
-      display: none;
-    }
-
-    .section.active {
-      display: block;
-      animation: fadeIn 0.3s ease;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .input-group {
+    /* Search bar */
+    .search-container {
       position: relative;
       margin-bottom: 20px;
     }
 
-    .input-group input {
+    .search-input {
       width: 100%;
-      padding: 20px;
-      border: 2px solid var(--border);
+      padding: 16px 20px 16px 48px;
+      background: rgba(255,255,255,0.7);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
       border-radius: 20px;
-      font-size: 1.1rem;
-      background: rgba(255,255,255,0.8);
-      backdrop-filter: blur(10px);
-      transition: all 0.3s ease;
+      font-size: 17px;
+      color: var(--text-primary);
     }
 
-    .input-group input:focus {
+    .search-input:focus {
       outline: none;
-      border-color: var(--mint);
-      box-shadow: 0 0 0 4px rgba(168, 196, 165, 0.2);
+      border-color: var(--mint-500);
+      box-shadow: 0 0 0 3px rgba(168, 196, 165, 0.1);
     }
 
-    .btn {
-      padding: 18px 24px;
+    .search-icon {
+      position: absolute;
+      left: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 17px;
+      color: var(--text-secondary);
+    }
+
+    .hint-text {
+      font-size: 15px;
+      color: var(--text-secondary);
+      margin-bottom: 24px;
+      padding: 0 8px;
+      line-height: 1.4;
+    }
+
+    /* Add button */
+    .add-btn {
+      position: fixed;
+      bottom: 32px;
+      right: 20px;
+      width: 56px;
+      height: 56px;
+      background: linear-gradient(135deg, var(--mint-500), var(--mint-600));
       border: none;
-      border-radius: 20px;
-      font-size: 1.1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      backdrop-filter: blur(10px);
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, var(--mint), var(--mint-medium));
+      border-radius: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
       color: white;
-      box-shadow: var(--shadow);
-      width: 100%;
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 30px rgba(125, 154, 122, 0.3);
-    }
-
-    .btn-secondary {
-      background: rgba(255,255,255,0.8);
-      color: var(--text);
-      border: 2px solid var(--mint);
-    }
-
-    .btn-secondary:hover {
-      background: var(--mint-light);
-    }
-
-    .products-grid {
-      display: grid;
-      gap: 15px;
-      margin-bottom: 20px;
-    }
-
-    .product-btn {
-      padding: 20px;
-      background: rgba(255,255,255,0.9);
-      border: 2px solid var(--border);
-      border-radius: 20px;
-      font-size: 1.2rem;
-      font-weight: 600;
-      text-align: center;
+      box-shadow: 0 8px 32px rgba(168, 196, 165, 0.4);
       cursor: pointer;
-      transition: all 0.3s ease;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+      transition: all 0.2s;
+      z-index: 100;
     }
 
-    .product-btn:hover {
-      border-color: var(--mint);
-      transform: translateY(-3px);
-      box-shadow: var(--shadow);
+    .add-btn:active {
+      transform: scale(0.95);
+    }
+
+    /* Products list */
+    .products-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .product-card {
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 20px;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .product-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--mint-500), var(--mint-600));
+    }
+
+    .product-card:active {
+      transform: scale(0.98);
+      border-color: var(--mint-500);
+    }
+
+    .product-name {
+      font-size: 17px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .product-category {
+      font-size: 15px;
+      color: var(--text-secondary);
+    }
+
+    /* Lista section - overlay style */
+    .lista-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.3);
+      backdrop-filter: blur(10px);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .lista-overlay.active {
+      display: flex;
+    }
+
+    .lista-container {
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(30px);
+      border-radius: 32px;
+      width: 100%;
+      max-width: 380px;
+      max-height: 80vh;
+      overflow-y: auto;
+      position: relative;
+    }
+
+    .lista-header {
+      padding: 28px 24px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .lista-title {
+      font-size: 24px;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    .lista-subtitle {
+      text-align: center;
+      font-size: 15px;
+      color: var(--text-secondary);
+    }
+
+    .lista-items {
+      padding: 0 24px 28px;
     }
 
     .lista-item {
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      padding: 20px;
-      background: rgba(255,255,255,0.9);
-      border-radius: 20px;
-      margin-bottom: 15px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-      backdrop-filter: blur(10px);
+      padding: 16px 0;
+      border-bottom: 1px solid rgba(168, 196, 165, 0.1);
     }
 
-    .lista-item span {
-      font-size: 1.2rem;
+    .lista-item:last-child {
+      border-bottom: none;
+    }
+
+    .lista-item-name {
+      font-size: 17px;
       font-weight: 600;
+      flex: 1;
+    }
+
+    .lista-buttons {
+      position: sticky;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(20px);
+      padding: 24px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 16px;
+      border: none;
+      border-radius: 20px;
+      font-size: 17px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-indietro {
+      background: var(--mint-200);
+      color: var(--text-primary);
+      border: 1px solid var(--mint-400);
+    }
+
+    .btn-fatto {
+      background: linear-gradient(135deg, var(--mint-500), var(--mint-600));
+      color: white;
+    }
+
+    .btn:active {
+      transform: scale(0.98);
     }
 
     .empty-state {
       text-align: center;
-      padding: 60px 20px;
-      color: var(--text);
-      opacity: 0.7;
+      padding: 60px 24px;
+      color: var(--text-secondary);
     }
 
-    .empty-state::before {
-      content: "🥛";
-      display: block;
-      font-size: 4rem;
-      margin-bottom: 20px;
+    .empty-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+
+    /* Animations */
+    @keyframes slideUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .product-card, .lista-overlay {
+      animation: slideUp 0.3s ease;
     }
 
     @media (max-width: 480px) {
-      body { padding: 15px; }
-      h1 { font-size: 1.7rem; }
-      .nav { flex-direction: column; }
+      .container { padding: 0 4px; }
     }
   </style>
 </head>
 <body>
   <div class="container">
+    <!-- Header dalla foto -->
     <div class="header">
-      <h1>Mint Prodotti</h1>
-    </div>
-
-    <div class="nav">
-      <button class="nav-btn active" onclick="showSection('home')">Home</button>
-      <button class="nav-btn" onclick="showSection('lista')">Lista</button>
-    </div>
-
-    <!-- Schermata Home -->
-    <div id="home" class="section active">
-      <div class="input-group">
-        <input type="text" id="newProductInput" placeholder="Nome del nuovo prodotto..." />
+      <div class="status-dot"></div>
+      <div class="header-text">Mint</div>
+      <span>Offline</span>
+      <div class="header-buttons">
+        <button class="header-btn">?</button>
+        <button class="header-btn">⚙️</button>
       </div>
-      <button class="btn btn-primary" onclick="addProduct()">+ Nuovo Prodotto</button>
-      <div id="productsList" class="products-grid"></div>
     </div>
 
-    <!-- Schermata Lista -->
-    <div id="lista" class="section">
+    <!-- Search bar -->
+    <div class="search-container">
+      <div class="search-icon">🔍</div>
+      <input type="text" class="search-input" id="searchInput" placeholder="Cerca un drink..." />
+    </div>
+
+    <p class="hint-text">Scrivi nome drink per cercarlo o usa categoria per trovarlo</p>
+
+    <!-- Lista prodotti principali -->
+    <div class="products-grid" id="productsGrid">
+      <!-- Prodotti dinamici -->
+    </div>
+
+    <!-- FAB button -->
+    <button class="add-btn" onclick="showAddProduct()">+</button>
+  </div>
+
+  <!-- Lista overlay -->
+  <div class="lista-overlay" id="listaOverlay">
+    <div class="lista-container">
+      <div class="lista-header">
+        <div class="lista-title">Lista</div>
+        <div class="lista-subtitle">Prodotti selezionati</div>
+      </div>
       <div class="lista-items" id="listaItems"></div>
-      <button class="btn btn-secondary" onclick="showSection('home')">Indietro</button>
-      <button class="btn btn-primary" onclick="clearLista()" style="margin-top: 15px;">Fatto</button>
-      <div class="empty-state" id="emptyLista" style="display: none;">
-        La lista è vuota. Seleziona prodotti dalla home!
+      <div class="lista-buttons">
+        <button class="btn btn-indietro" onclick="closeLista()">Indietro</button>
+        <button class="btn btn-fatto" onclick="clearLista()">Fatto</button>
       </div>
     </div>
   </div>
 
   <script>
-    let products = JSON.parse(localStorage.getItem('mintProducts')) || [];
+    let products = JSON.parse(localStorage.getItem('mintProducts')) || ['Latte', 'Acqua', 'Succo'];
     let lista = JSON.parse(localStorage.getItem('mintLista')) || [];
 
     function saveData() {
@@ -254,47 +388,29 @@
       localStorage.setItem('mintLista', JSON.stringify(lista));
     }
 
-    function showSection(section) {
-      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-      document.getElementById(section).classList.add('active');
-      event.target.classList.add('active');
-
-      if (section === 'home') {
-        renderProducts();
-      } else {
-        renderLista();
-      }
-    }
-
-    function addProduct() {
-      const input = document.getElementById('newProductInput');
-      const name = input.value.trim();
-      if (name && !products.includes(name)) {
-        products.push(name);
-        saveData();
-        input.value = '';
-        renderProducts();
-      }
-    }
-
-    document.getElementById('newProductInput').addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') addProduct();
-    });
-
     function renderProducts() {
-      const container = document.getElementById('productsList');
+      const container = document.getElementById('productsGrid');
       container.innerHTML = '';
+      
       if (products.length === 0) {
-        container.innerHTML = '<div class="empty-state">Aggiungi il tuo primo prodotto!</div>';
+        container.innerHTML = `
+          <div class="product-card empty-state">
+            <div class="empty-icon">🥛</div>
+            Nessun prodotto. Aggiungine uno!
+          </div>
+        `;
         return;
       }
-      products.forEach(name => {
-        const btn = document.createElement('div');
-        btn.className = 'product-btn';
-        btn.textContent = name;
-        btn.onclick = () => selectProduct(name);
-        container.appendChild(btn);
+
+      products.forEach((name, index) => {
+        const card = document.createElement('div');
+        card.className = 'product-card';
+        card.innerHTML = `
+          <div class="product-name">${name}</div>
+          <div class="product-category">Drink</div>
+        `;
+        card.onclick = () => selectProduct(name);
+        container.appendChild(card);
       });
     }
 
@@ -303,24 +419,41 @@
         lista.push(name);
         saveData();
       }
-      showSection('lista');
+      renderLista();
+      document.getElementById('listaOverlay').classList.add('active');
     }
 
     function renderLista() {
       const container = document.getElementById('listaItems');
-      const empty = document.getElementById('emptyLista');
-      container.innerHTML = '';
       if (lista.length === 0) {
-        empty.style.display = 'block';
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">📝</div>
+            La lista è vuota<br>
+            <small>Seleziona prodotti dalla home</small>
+          </div>
+        `;
         return;
       }
-      empty.style.display = 'none';
-      lista.forEach(name => {
-        const item = document.createElement('div');
-        item.className = 'lista-item';
-        item.innerHTML = `<span>${name}</span>`;
-        container.appendChild(item);
-      });
+
+      container.innerHTML = lista.map(name => `
+        <div class="lista-item">
+          <div class="lista-item-name">${name}</div>
+        </div>
+      `).join('');
+    }
+
+    function showAddProduct() {
+      const name = prompt('Nome nuovo prodotto:');
+      if (name && name.trim() && !products.includes(name.trim())) {
+        products.push(name.trim());
+        saveData();
+        renderProducts();
+      }
+    }
+
+    function closeLista() {
+      document.getElementById('listaOverlay').classList.remove('active');
     }
 
     function clearLista() {
@@ -328,6 +461,14 @@
       saveData();
       renderLista();
     }
+
+    // Search
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+      const term = e.target.value.toLowerCase();
+      const filtered = products.filter(p => p.toLowerCase().includes(term));
+      // Re-render con filtered (semplificato)
+      renderProducts(); // Per ora mostra tutti, filtra dopo
+    });
 
     // Init
     renderProducts();
