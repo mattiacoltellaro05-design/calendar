@@ -19,6 +19,7 @@
       --text-primary: #1a3c1a;
       --text-secondary: #4a6f4a;
       --border: rgba(168, 196, 165, 0.3);
+      --card-strip: linear-gradient(90deg, var(--mint-500), var(--mint-600));
     }
 
     [data-theme="dark"] {
@@ -35,6 +36,7 @@
       --text-primary: #e8f5e8;
       --text-secondary: #c0d8c0;
       --border: rgba(151, 194, 175, 0.2);
+      --card-strip: linear-gradient(90deg, var(--mint-700), var(--mint-800));
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -46,7 +48,7 @@
       min-height: 100vh;
       padding: 20px 16px;
       overflow-x: hidden;
-      transition: all 0.3s ease;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .container { max-width: 390px; margin: 0 auto; }
@@ -65,6 +67,12 @@
       height: 10px;
       background: #10b981;
       border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
     }
 
     .header-text {
@@ -91,7 +99,27 @@
       font-size: 16px;
       color: var(--text-primary);
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .header-btn::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      background: rgba(255,255,255,0.3);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      transition: width 0.3s, height 0.3s;
+    }
+
+    .header-btn:active::before {
+      width: 100px;
+      height: 100px;
     }
 
     .header-btn:active {
@@ -113,6 +141,7 @@
       border-radius: 20px;
       font-size: 17px;
       color: var(--text-primary);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     [data-theme="dark"] .search-input { 
@@ -123,6 +152,7 @@
       outline: none;
       border-color: var(--mint-500);
       box-shadow: 0 0 0 3px rgba(168, 196, 165, 0.1);
+      transform: scale(1.02);
     }
 
     .search-icon {
@@ -132,6 +162,11 @@
       transform: translateY(-50%);
       font-size: 17px;
       color: var(--text-secondary);
+      transition: transform 0.2s;
+    }
+
+    .search-input:focus + .search-icon {
+      transform: translateY(-50%) scale(1.1);
     }
 
     .hint-text {
@@ -140,6 +175,7 @@
       margin-bottom: 24px;
       padding: 0 8px;
       line-height: 1.4;
+      opacity: 0.9;
     }
 
     .fab-container {
@@ -163,7 +199,10 @@
       font-size: 20px;
       color: white;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
     }
 
     .add-btn {
@@ -176,14 +215,23 @@
       backdrop-filter: blur(20px);
       border: 1px solid var(--mint-500);
       box-shadow: 0 4px 20px rgba(168, 196, 165, 0.3);
+      font-size: 18px;
     }
 
     .lista-btn.active {
       background: var(--mint-600);
-      box-shadow: 0 6px 24px rgba(144, 179, 154, 0.4);
+      box-shadow: 0 8px 32px rgba(144, 179, 154, 0.5);
+      animation: bounce 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
     }
 
-    .add-btn:active, .lista-btn:active { transform: scale(0.95); }
+    @keyframes bounce {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+
+    .add-btn:active, .lista-btn:active { 
+      transform: scale(0.92); 
+    }
 
     .products-grid {
       display: grid;
@@ -199,7 +247,7 @@
       border-radius: 20px;
       padding: 12px 8px;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       position: relative;
       overflow: hidden;
       height: 72px;
@@ -222,19 +270,28 @@
       left: 0;
       right: 0;
       height: 3px;
-      background: linear-gradient(90deg, var(--mint-500), var(--mint-600));
+      background: var(--card-strip);
       border-radius: 20px 20px 0 0;
+      transition: all 0.4s ease;
+    }
+
+    .product-card:hover::before,
+    .product-card.selected::before {
+      height: 6px;
+      box-shadow: 0 2px 12px rgba(168, 196, 165, 0.4);
     }
 
     .product-card:active {
-      transform: scale(0.97);
+      transform: scale(0.97) translateY(2px);
       border-color: var(--mint-500);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
     }
 
     .product-name { 
       font-weight: 600; 
       margin-bottom: 2px; 
       line-height: 1.2; 
+      position: relative;
     }
 
     .product-category { 
@@ -271,7 +328,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: all 0.2s;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .edit-btn.edit { 
@@ -300,6 +357,12 @@
       align-items: center;
       justify-content: center;
       padding: 20px;
+      animation: overlayFadeIn 0.3s ease;
+    }
+
+    @keyframes overlayFadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
 
     .overlay.active { display: flex; }
@@ -314,6 +377,13 @@
       overflow-y: auto;
       position: relative;
       padding: 8px;
+      transform: scale(0.9);
+      animation: overlaySlideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    @keyframes overlaySlideUp {
+      from { transform: scale(0.9) translateY(30px); opacity: 0; }
+      to { transform: scale(1) translateY(0); opacity: 1; }
     }
 
     [data-theme="dark"] .overlay-container {
@@ -336,10 +406,15 @@
       justify-content: space-between;
       padding: 20px 24px;
       border-bottom: 1px solid var(--border);
-      margin: 0 8px;
+      margin: 0 8px 8px;
       border-radius: 16px;
-      margin-bottom: 8px;
       background: rgba(255,255,255,0.5);
+      transition: all 0.2s;
+    }
+
+    .settings-item:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
 
     [data-theme="dark"] .settings-item {
@@ -352,6 +427,46 @@
       color: var(--text-primary);
     }
 
+    .color-picker-container {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .color-preview {
+      width: 32px;
+      height: 32px;
+      border-radius: 16px;
+      border: 2px solid var(--border);
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .color-preview::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--card-strip);
+      z-index: -1;
+    }
+
+    .color-preview:active {
+      transform: scale(0.95);
+    }
+
+    #cardStripColor {
+      opacity: 0;
+      position: absolute;
+      width: 200px;
+      height: 44px;
+      cursor: pointer;
+    }
+
     .toggle-switch {
       position: relative;
       width: 52px;
@@ -359,12 +474,13 @@
       background: var(--mint-200);
       border-radius: 16px;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       border: 1px solid var(--border);
     }
 
     .toggle-switch.active {
       background: var(--mint-500);
+      box-shadow: 0 2px 8px rgba(168, 196, 165, 0.3);
     }
 
     .toggle-knob {
@@ -375,7 +491,7 @@
       height: 28px;
       background: white;
       border-radius: 50%;
-      transition: transform 0.3s ease;
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       box-shadow: 0 2px 8px rgba(0,0,0,0.2);
     }
 
@@ -390,10 +506,30 @@
       font-size: 15px;
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
       display: flex;
       align-items: center;
       gap: 6px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-action::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      background: rgba(255,255,255,0.3);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      transition: width 0.3s, height 0.3s;
+    }
+
+    .btn-action:active::before {
+      width: 100px;
+      height: 100px;
     }
 
     .btn-backup {
@@ -435,7 +571,18 @@
       align-items: center;
       padding: 16px 0;
       border-bottom: 1px solid rgba(168, 196, 165, 0.1);
+      animation: slideInLeft 0.4s cubic-bezier(0.4, 0, 0.2, 1) both;
+      opacity: 0;
     }
+
+    @keyframes slideInLeft {
+      from { opacity: 0; transform: translateX(-20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .lista-item:nth-child(1) { animation-delay: 0.1s; }
+    .lista-item:nth-child(2) { animation-delay: 0.2s; }
+    .lista-item:nth-child(3) { animation-delay: 0.3s; }
 
     .lista-item:last-child { border-bottom: none; }
 
@@ -468,7 +615,9 @@
       font-size: 17px;
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
     }
 
     .btn-indietro {
@@ -488,6 +637,12 @@
       text-align: center; 
       padding: 60px 24px; 
       color: var(--text-secondary); 
+      animation: fadeIn 0.5s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     @media (max-width: 480px) {
@@ -543,6 +698,21 @@
       </div>
 
       <div class="settings-item">
+        <div class="settings-label">Animazioni</div>
+        <div class="toggle-switch" id="animationsToggle">
+          <div class="toggle-knob"></div>
+        </div>
+      </div>
+
+      <div class="settings-item">
+        <div class="settings-label">Colore Barra Card</div>
+        <div class="color-picker-container">
+          <div class="color-preview" onclick="document.getElementById('cardStripColor').click()"></div>
+          <input type="color" id="cardStripColor" value="#a8c4a5" onchange="changeCardStripColor(this.value)">
+        </div>
+      </div>
+
+      <div class="settings-item">
         <div class="settings-label">Backup Dati</div>
         <button class="btn-action btn-backup" onclick="backupData()">💾 Backup</button>
       </div>
@@ -578,6 +748,8 @@
     let currentSearchTerm = '';
     let isDarkMode = localStorage.getItem('mintDarkMode') === 'true';
     let isVibrationEnabled = localStorage.getItem('mintVibration') !== 'false';
+    let isAnimationsEnabled = localStorage.getItem('mintAnimations') !== 'false';
+    let cardStripColor = localStorage.getItem('mintCardStrip') || '#a8c4a5';
 
     // Inizializzazione
     products.sort((a, b) => a.localeCompare(b, 'it'));
@@ -585,6 +757,7 @@
 
     function initApp() {
       updateTheme();
+      updateCardStrip();
       updateToggles();
       renderProducts();
       updateListaBtn();
@@ -598,9 +771,38 @@
       }
     }
 
+    function updateCardStrip() {
+      const gradient = `linear-gradient(90deg, ${cardStripColor}, ${adjustBrightness(cardStripColor, 20)})`;
+      document.documentElement.style.setProperty('--card-strip', gradient);
+      document.querySelector('.color-preview').style.background = gradient;
+    }
+
+    function adjustBrightness(hex, percent) {
+      // Simple brightness adjustment for gradient
+      const num = parseInt(hex.replace('#', ''), 16);
+      const amt = Math.round(2.55 * percent);
+      const R = (num >> 16) + amt;
+      const G = (num >> 8 & 0x00FF) + amt;
+      const B = (num & 0x0000FF) + amt;
+      return '#' + (0x1000000 + (R < 255 ? R < 1 ? 0 : R : 255) * 0x10000 +
+        (G < 255 ? G < 1 ? 0 : G : 255) * 0x100 +
+        (B < 255 ? B < 1 ? 0 : B : 255)).toString(16).slice(1);
+    }
+
+    function changeCardStripColor(color) {
+      cardStripColor = color;
+      localStorage.setItem('mintCardStrip', color);
+      updateCardStrip();
+      vibrate(100);
+    }
+
     function updateToggles() {
       document.getElementById('darkModeToggle').classList.toggle('active', isDarkMode);
       document.getElementById('vibrationToggle').classList.toggle('active', isVibrationEnabled);
+      document.getElementById('animationsToggle').classList.toggle('active', isAnimationsEnabled);
+      if (!isAnimationsEnabled) {
+        document.body.style.animation = 'none';
+      }
     }
 
     function saveData() {
@@ -611,6 +813,7 @@
     function saveSettings() {
       localStorage.setItem('mintDarkMode', isDarkMode);
       localStorage.setItem('mintVibration', isVibrationEnabled);
+      localStorage.setItem('mintAnimations', isAnimationsEnabled);
     }
 
     function vibrate(pattern = 100) {
@@ -638,16 +841,21 @@
         return;
       }
 
-      displayProducts.forEach((name) => {
+      displayProducts.forEach((name, index) => {
+        const isSelected = lista.includes(name);
         const card = document.createElement('div');
-        card.className = 'product-card';
+        card.className = `product-card ${isSelected ? 'selected' : ''}`;
+        card.style.animationDelay = `${index * 0.05}s`;
+        if (isAnimationsEnabled) {
+          card.style.animation = 'fadeInUp 0.4s cubic-bezier(0.4, 0, 0.2, 1) both';
+        }
         card.innerHTML = `
           <div class="product-name">${name}</div>
           <div class="product-category">Drink</div>
           ${isEditMode ? `
             <div class="edit-controls">
-              <button class="edit-btn edit" onclick="editProduct('${name.replace(/'/g, "\\\\'")}')">✏️</button>
-              <button class="edit-btn delete" onclick="deleteProduct('${name.replace(/'/g, "\\\\'")}')">🗑️</button>
+              <button class="edit-btn edit" onclick="editProduct('${name.replace(/'/g, "\\'")}')">✏️</button>
+              <button class="edit-btn delete" onclick="deleteProduct('${name.replace(/'/g, "\\'")}')">🗑️</button>
             </div>
           ` : ''}
         `;
@@ -669,6 +877,7 @@
       }
       saveData();
       updateListaBtn();
+      renderProducts();
       if (isListaOpen) renderLista();
     }
 
@@ -683,16 +892,16 @@
       if (lista.length === 0) {
         container.innerHTML = `
           <div class="empty-state">
-            <div class="empty-icon">📝</div>
+            <div style="font-size: 48px; margin-bottom: 16px;">📝</div>
             La lista è vuota<br><small>Seleziona prodotti dalla griglia</small>
           </div>
         `;
         return;
       }
-      container.innerHTML = lista.map(name => `
-        <div class="lista-item">
+      container.innerHTML = lista.map((name, index) => `
+        <div class="lista-item" style="animation-delay: ${0.1 + index * 0.05}s">
           <div class="lista-item-name">${name}</div>
-          <div>✓</div>
+          <div style="font-size: 24px; color: var(--mint-500);">✓</div>
         </div>
       `).join('');
     }
@@ -765,6 +974,7 @@
       isEditMode = !isEditMode;
       document.body.classList.toggle('edit-mode', isEditMode);
       renderProducts();
+      vibrate(100);
     }
 
     function toggleDarkMode() {
@@ -784,6 +994,16 @@
       }
     }
 
+    function toggleAnimations() {
+      isAnimationsEnabled = !isAnimationsEnabled;
+      updateToggles();
+      saveSettings();
+      if (isAnimationsEnabled) {
+        location.reload(); // Ricarica per riattivare CSS animations
+      }
+      vibrate(100);
+    }
+
     function toggleSettings() {
       document.getElementById('settingsOverlay').classList.toggle('active');
     }
@@ -794,7 +1014,9 @@
         lista,
         settings: { 
           darkMode: isDarkMode, 
-          vibration: isVibrationEnabled 
+          vibration: isVibrationEnabled,
+          animations: isAnimationsEnabled,
+          cardStrip: cardStripColor
         },
         timestamp: new Date().toLocaleString('it-IT')
       };
@@ -826,6 +1048,7 @@
 
     document.getElementById('darkModeToggle').addEventListener('click', toggleDarkMode);
     document.getElementById('vibrationToggle').addEventListener('click', toggleVibration);
+    document.getElementById('animationsToggle').addEventListener('click', toggleAnimations);
 
     // Chiudi overlay cliccando fuori
     document.querySelectorAll('.overlay').forEach(overlay => {
@@ -836,6 +1059,16 @@
         }
       });
     });
+
+    // Aggiungi keyframes per animazioni
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+    `;
+    document.head.appendChild(style);
   </script>
 </body>
 </html>
