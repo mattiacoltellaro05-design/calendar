@@ -3,21 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sage Timeline - Calendario Intelligente</title>
+  <title>Mint Prodotti - Gestione Lista</title>
   <style>
     :root {
-      --sage-50: #f0f9f0;
-      --sage-100: #d4e4d8;
-      --sage-200: #b8d0b5;
-      --sage-300: #9abc92;
-      --sage-400: #7da77e;
-      --sage-500: #61936a;
-      --sage-600: #477156;
-      --sage-700: #2d4a2d;
-      --sage-800: #133813;
-      --accent: #f4a261;
-      --gold: #e9c46a;
-      --bg: #fafaf9;
+      --mint-light: #d4e4d8;
+      --mint: #a8c4a5;
+      --mint-medium: #90b39a;
+      --mint-dark: #7d9a7a;
+      --mint-darker: #5e7a5a;
+      --bg: #f8faf7;
+      --text: #2d4a2d;
+      --border: #e0e8e0;
+      --shadow: 0 4px 20px rgba(125, 154, 122, 0.15);
     }
 
     * {
@@ -27,640 +24,313 @@
     }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: linear-gradient(135deg, var(--sage-50) 0%, var(--bg) 100%);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, var(--bg) 0%, var(--mint-light) 100%);
       min-height: 100vh;
-      color: var(--sage-700);
-      touch-action: manipulation; /* Migliora touch su mobile */
+      color: var(--text);
+      padding: 20px;
     }
 
     .container {
-      max-width: 1400px;
+      max-width: 500px;
       margin: 0 auto;
-      padding: 20px;
-      display: grid;
-      grid-template-rows: auto 1fr auto;
-      min-height: 100vh;
-      gap: 24px;
     }
 
     .header {
-      background: white;
-      padding: 24px;
-      border-radius: 24px;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
-      border: 1px solid var(--sage-100);
+      text-align: center;
+      margin-bottom: 30px;
     }
 
-    .header h1 {
-      font-size: clamp(1.5rem, 4vw, 2.25rem);
-      background: linear-gradient(135deg, var(--sage-700), var(--sage-500));
+    h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--mint-darker), var(--mint));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      background-clip: text;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
     }
 
-    .controls {
+    .nav {
       display: flex;
-      gap: 12px;
+      gap: 10px;
+      margin-bottom: 30px;
       flex-wrap: wrap;
-      align-items: center;
+    }
+
+    .nav-btn {
+      flex: 1;
+      padding: 16px 20px;
+      background: rgba(168, 196, 165, 0.8);
+      border: 1px solid var(--mint);
+      border-radius: 16px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+    }
+
+    .nav-btn.active {
+      background: var(--mint);
+      box-shadow: var(--shadow);
+      transform: translateY(-2px);
+    }
+
+    .nav-btn:not(.active) {
+      opacity: 0.7;
+    }
+
+    .section {
+      display: none;
+    }
+
+    .section.active {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .input-group {
+      position: relative;
+      margin-bottom: 20px;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 20px;
+      border: 2px solid var(--border);
+      border-radius: 20px;
+      font-size: 1.1rem;
+      background: rgba(255,255,255,0.8);
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+    }
+
+    .input-group input:focus {
+      outline: none;
+      border-color: var(--mint);
+      box-shadow: 0 0 0 4px rgba(168, 196, 165, 0.2);
     }
 
     .btn {
-      background: var(--sage-400);
-      color: white;
+      padding: 18px 24px;
       border: none;
-      padding: 12px 20px;
-      border-radius: 16px;
+      border-radius: 20px;
+      font-size: 1.1rem;
+      font-weight: 600;
       cursor: pointer;
-      font-weight: 500;
-      transition: all 0.2s ease;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 14px;
-      touch-action: manipulation;
-    }
-
-    .btn:hover, .btn:active {
-      background: var(--sage-500);
-      transform: translateY(-1px);
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
     }
 
     .btn-primary {
-      background: var(--accent);
+      background: linear-gradient(135deg, var(--mint), var(--mint-medium));
+      color: white;
+      box-shadow: var(--shadow);
+      width: 100%;
     }
 
-    .date-nav {
-      display: flex;
-      gap: 12px;
-      align-items: center;
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(125, 154, 122, 0.3);
     }
 
-    .date-display {
-      font-size: 1.25rem;
+    .btn-secondary {
+      background: rgba(255,255,255,0.8);
+      color: var(--text);
+      border: 2px solid var(--mint);
+    }
+
+    .btn-secondary:hover {
+      background: var(--mint-light);
+    }
+
+    .products-grid {
+      display: grid;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .product-btn {
+      padding: 20px;
+      background: rgba(255,255,255,0.9);
+      border: 2px solid var(--border);
+      border-radius: 20px;
+      font-size: 1.2rem;
       font-weight: 600;
-      min-width: 200px;
       text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
     }
 
-    .timeline-container {
-      background: white;
-      border-radius: 24px;
-      padding: 24px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.12);
-      border: 1px solid var(--sage-100);
-      overflow: hidden;
-      position: relative;
+    .product-btn:hover {
+      border-color: var(--mint);
+      transform: translateY(-3px);
+      box-shadow: var(--shadow);
     }
 
-    .timeline-header {
+    .lista-item {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 24px;
-      padding-bottom: 16px;
-      border-bottom: 2px solid var(--sage-100);
-    }
-
-    .timeline {
-      height: 60vh;
-      overflow-y: auto;
-      padding-right: 12px;
-      scrollbar-width: thin;
-      scrollbar-color: var(--sage-300) var(--sage-100);
-    }
-
-    .timeline::-webkit-scrollbar {
-      width: 6px;
-    }
-
-    .timeline::-webkit-scrollbar-track {
-      background: var(--sage-100);
-      border-radius: 3px;
-    }
-
-    .timeline::-webkit-scrollbar-thumb {
-      background: var(--sage-300);
-      border-radius: 3px;
-    }
-
-    .timeline-track {
-      position: relative;
-      height: 100%;
-    }
-
-    .timeline-track::before {
-      content: '';
-      position: absolute;
-      left: 20px;
-      top: 0;
-      bottom: 0;
-      width: 4px;
-      background: linear-gradient(to bottom, var(--sage-200), var(--sage-400));
-      border-radius: 2px;
-    }
-
-    .event {
-      position: relative;
-      margin: 20px 0;
       padding: 20px;
-      background: white;
+      background: rgba(255,255,255,0.9);
       border-radius: 20px;
-      border-left: 4px solid var(--accent);
-      cursor: pointer;
-      transition: all 0.2s ease;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-      user-select: none;
-      touch-action: manipulation;
+      margin-bottom: 15px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+      backdrop-filter: blur(10px);
     }
 
-    .event:hover, .event:active {
-      transform: translateX(4px);
-      box-shadow: 0 4px 20px rgba(0,0,0,0.12);
-    }
-
-    .event.lavoro { border-left-color: var(--accent); }
-    .event.salute { border-left-color: #10b981; }
-    .event.famiglia { border-left-color: #f59e0b; }
-    .event.casa { border-left-color: #ef4444; }
-
-    .event-time {
-      font-weight: 600;
-      color: var(--sage-700);
-      margin-bottom: 8px;
-      font-size: 0.95rem;
-    }
-
-    .event-title {
-      font-size: 1.1rem;
-      font-weight: 600;
-      margin-bottom: 4px;
-      color: var(--sage-800);
-    }
-
-    .event-category {
-      display: inline-block;
-      background: var(--sage-100);
-      color: var(--sage-700);
-      padding: 4px 12px;
-      border-radius: 12px;
-      font-size: 0.8rem;
-      font-weight: 500;
-    }
-
-    .insights {
-      background: linear-gradient(135deg, var(--sage-50), var(--sage-100));
-      padding: 20px;
-      border-radius: 20px;
-      border: 1px solid var(--sage-200);
-    }
-
-    .insight {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 12px;
-      padding: 12px;
-      background: white;
-      border-radius: 16px;
-      border-left: 4px solid var(--gold);
-    }
-
-    .insight:last-child {
-      margin-bottom: 0;
-    }
-
-    .insight-icon {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      background: var(--gold);
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    .lista-item span {
       font-size: 1.2rem;
-    }
-
-    .quick-add {
-      position: sticky;
-      bottom: 20px;
-      left: 20px;
-      right: 20px;
-      background: white;
-      padding: 16px;
-      border-radius: 20px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.16);
-      border: 1px solid var(--sage-200);
-      display: flex;
-      gap: 12px;
-      align-items: center;
-      z-index: 1000;
-    }
-
-    .quick-input {
-      flex: 1;
-      padding: 12px 16px;
-      border: 2px solid var(--sage-200);
-      border-radius: 12px;
-      font-size: 16px;
-      outline: none;
-      transition: border-color 0.2s ease;
-      min-height: 48px; /* Migliore touch target su mobile */
-    }
-
-    .quick-input:focus {
-      border-color: var(--sage-400);
-    }
-
-    /* Modal per editing */
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.5);
-      z-index: 2000;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-
-    .modal-content {
-      background: white;
-      padding: 24px;
-      border-radius: 24px;
-      width: 100%;
-      max-width: 500px;
-      max-height: 90vh;
-      overflow-y: auto;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-    }
-
-    .modal h3 {
-      margin-bottom: 20px;
-      color: var(--sage-800);
-    }
-
-    .modal input, .modal select {
-      width: 100%;
-      padding: 12px;
-      border: 2px solid var(--sage-200);
-      border-radius: 12px;
-      margin-bottom: 16px;
-      font-size: 16px;
-    }
-
-    .modal-footer {
-      display: flex;
-      gap: 12px;
-      justify-content: flex-end;
-    }
-
-    @media (max-width: 768px) {
-      .container {
-        padding: 12px;
-        gap: 16px;
-      }
-      
-      .timeline-container {
-        padding: 16px;
-        border-radius: 20px;
-        height: 50vh;
-      }
-      
-      .quick-add {
-        bottom: 10px;
-        left: 10px;
-        right: 10px;
-        padding: 12px;
-      }
-      
-      .controls {
-        flex-direction: column;
-        align-items: stretch;
-      }
-      
-      .btn, .quick-input {
-        justify-content: center;
-        min-height: 48px;
-      }
-      
-      .date-nav {
-        justify-content: center;
-      }
+      font-weight: 600;
     }
 
     .empty-state {
       text-align: center;
       padding: 60px 20px;
-      color: var(--sage-500);
+      color: var(--text);
+      opacity: 0.7;
     }
 
-    .empty-state svg {
-      width: 80px;
-      height: 80px;
+    .empty-state::before {
+      content: "🥛";
+      display: block;
+      font-size: 4rem;
       margin-bottom: 20px;
-      opacity: 0.6;
+    }
+
+    @media (max-width: 480px) {
+      body { padding: 15px; }
+      h1 { font-size: 1.7rem; }
+      .nav { flex-direction: column; }
     }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="header">
-      <h1>Sage Timeline</h1>
-      <div class="controls">
-        <div class="date-nav">
-          <button class="btn" onclick="changeDate(-1)">◀️</button>
-          <div class="date-display" id="currentDate">25 Feb 2026</div>
-          <button class="btn" onclick="changeDate(1)">▶️</button>
-        </div>
-        <button class="btn btn-primary" onclick="exportData()">💾 Backup</button>
-        <input type="file" id="importFile" accept=".json" style="display: none">
-        <button class="btn" onclick="document.getElementById('importFile').click()">📁 Ripristina</button>
-      </div>
+      <h1>Mint Prodotti</h1>
     </div>
 
-    <div class="timeline-container">
-      <div class="timeline-header">
-        <h2 id="timelineTitle">Martedì 25 Feb 2026</h2>
-        <span id="eventCount">0 eventi</span>
-      </div>
-      <div class="timeline" id="timeline">
-        <div class="empty-state" id="emptyState">
-          <svg viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-          </svg>
-          <h3>La tua timeline è vuota</h3>
-          <p>Usa il campo in basso per aggiungere velocemente i primi eventi</p>
-        </div>
-      </div>
+    <div class="nav">
+      <button class="nav-btn active" onclick="showSection('home')">Home</button>
+      <button class="nav-btn" onclick="showSection('lista')">Lista</button>
     </div>
 
-    <div class="insights" id="insights">
-      <div class="insight">
-        <div class="insight-icon">🧠</div>
-        <div>
-          <strong>Analisi pattern:</strong> Nessun dato ancora disponibile
-        </div>
+    <!-- Schermata Home -->
+    <div id="home" class="section active">
+      <div class="input-group">
+        <input type="text" id="newProductInput" placeholder="Nome del nuovo prodotto..." />
       </div>
+      <button class="btn btn-primary" onclick="addProduct()">+ Nuovo Prodotto</button>
+      <div id="productsList" class="products-grid"></div>
     </div>
 
-    <div class="quick-add">
-      <input type="text" class="quick-input" id="quickInput" placeholder="Aggiungi evento... (es. 'Riunione 14:00 Lavoro')" />
-      <select id="quickCategory">
-        <option value="lavoro">💼 Lavoro</option>
-        <option value="salute">❤️ Salute</option>
-        <option value="famiglia">👨‍👩‍👧 Famiglia</option>
-        <option value="casa">🏠 Casa</option>
-      </select>
-      <button class="btn btn-primary" onclick="addQuickEvent()">+</button>
-    </div>
-  </div>
-
-  <!-- Modal per editing -->
-  <div class="modal" id="editModal">
-    <div class="modal-content">
-      <h3>✏️ Modifica Evento</h3>
-      <input type="text" id="editTitle" placeholder="Titolo evento">
-      <input type="time" id="editTime">
-      <select id="editCategory">
-        <option value="lavoro">💼 Lavoro</option>
-        <option value="salute">❤️ Salute</option>
-        <option value="famiglia">👨‍👩‍👧 Famiglia</option>
-        <option value="casa">🏠 Casa</option>
-      </select>
-      <div class="modal-footer">
-        <button class="btn" onclick="closeModal()">Annulla</button>
-        <button class="btn btn-primary" onclick="saveEdit()">Salva</button>
+    <!-- Schermata Lista -->
+    <div id="lista" class="section">
+      <div class="lista-items" id="listaItems"></div>
+      <button class="btn btn-secondary" onclick="showSection('home')">Indietro</button>
+      <button class="btn btn-primary" onclick="clearLista()" style="margin-top: 15px;">Fatto</button>
+      <div class="empty-state" id="emptyLista" style="display: none;">
+        La lista è vuota. Seleziona prodotti dalla home!
       </div>
     </div>
   </div>
 
   <script>
-    let events = JSON.parse(localStorage.getItem('sageTimeline')) || {};
-    let currentDate = new Date();
-    currentDate.setHours(0, 0, 0, 0);
-    let editingEventId = null;
+    let products = JSON.parse(localStorage.getItem('mintProducts')) || [];
+    let lista = JSON.parse(localStorage.getItem('mintLista')) || [];
 
     function saveData() {
-      localStorage.setItem('sageTimeline', JSON.stringify(events));
+      localStorage.setItem('mintProducts', JSON.stringify(products));
+      localStorage.setItem('mintLista', JSON.stringify(lista));
     }
 
-    function getDateKey(date) {
-      return date.toISOString().split('T')[0];
+    function showSection(section) {
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById(section).classList.add('active');
+      event.target.classList.add('active');
+
+      if (section === 'home') {
+        renderProducts();
+      } else {
+        renderLista();
+      }
     }
 
-    function changeDate(days) {
-      currentDate.setDate(currentDate.getDate() + days);
-      render();
+    function addProduct() {
+      const input = document.getElementById('newProductInput');
+      const name = input.value.trim();
+      if (name && !products.includes(name)) {
+        products.push(name);
+        saveData();
+        input.value = '';
+        renderProducts();
+      }
     }
 
-    function parseEvent(text) {
-      const timeMatch = text.match(/(\d{1,2}):?(\d{2})?/);
-      let time = timeMatch ? `${timeMatch[1].padStart(2,'0')}:00` : '09:00';
-      if (timeMatch && timeMatch[2]) time = `${timeMatch[1].padStart(2,'0')}:${timeMatch[2]}`;
-      
-      const title = text.replace(/(\d{1,2}):?(\d{2})?.*/, '').trim();
-      return { title, time, category: 'lavoro' };
-    }
+    document.getElementById('newProductInput').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') addProduct();
+    });
 
-    function addQuickEvent() {
-      const input = document.getElementById('quickInput');
-      const category = document.getElementById('quickCategory').value;
-      const text = input.value.trim();
-      
-      if (!text) return;
-      
-      const dateKey = getDateKey(currentDate);
-      if (!events[dateKey]) events[dateKey] = [];
-      
-      const eventData = parseEvent(text);
-      eventData.category = category;
-      eventData.id = Date.now() + Math.random(); // ID unico
-      
-      events[dateKey].push(eventData);
-      saveData();
-      input.value = '';
-      render();
-    }
-
-    function editEvent(id) {
-      const dateKey = getDateKey(currentDate);
-      const dayEvents = events[dateKey] || [];
-      const event = dayEvents.find(e => e.id === id);
-      
-      if (!event) return;
-      
-      editingEventId = id;
-      document.getElementById('editTitle').value = event.title;
-      document.getElementById('editTime').value = event.time;
-      document.getElementById('editCategory').value = event.category;
-      
-      document.getElementById('editModal').style.display = 'flex';
-    }
-
-    function saveEdit() {
-      const dateKey = getDateKey(currentDate);
-      const dayEvents = events[dateKey] || [];
-      
-      const eventIndex = dayEvents.findIndex(e => e.id === editingEventId);
-      if (eventIndex === -1) return;
-      
-      dayEvents[eventIndex] = {
-        ...dayEvents[eventIndex],
-        title: document.getElementById('editTitle').value,
-        time: document.getElementById('editTime').value,
-        category: document.getElementById('editCategory').value
-      };
-      
-      saveData();
-      closeModal();
-      render();
-    }
-
-    function closeModal() {
-      document.getElementById('editModal').style.display = 'none';
-      editingEventId = null;
-    }
-
-    function renderTimeline() {
-      const dateKey = getDateKey(currentDate);
-      const dayEvents = events[dateKey] || [];
-      const timeline = document.getElementById('timeline');
-      const emptyState = document.getElementById('emptyState');
-      
-      if (dayEvents.length === 0) {
-        timeline.innerHTML = emptyState.outerHTML;
+    function renderProducts() {
+      const container = document.getElementById('productsList');
+      container.innerHTML = '';
+      if (products.length === 0) {
+        container.innerHTML = '<div class="empty-state">Aggiungi il tuo primo prodotto!</div>';
         return;
       }
-      
-      emptyState.style.display = 'none';
-      
-      timeline.innerHTML = dayEvents
-        .sort((a, b) => a.time.localeCompare(b.time))
-        .map(event => `
-          <div class="event ${event.category}" data-id="${event.id}" onclick="editEvent('${event.id}')">
-            <div class="event-time">${event.time}</div>
-            <div class="event-title">${event.title}</div>
-            <div class="event-category">${getCategoryLabel(event.category)}</div>
-          </div>
-        `).join('');
-      
-      document.getElementById('eventCount').textContent = `${dayEvents.length} eventi`;
+      products.forEach(name => {
+        const btn = document.createElement('div');
+        btn.className = 'product-btn';
+        btn.textContent = name;
+        btn.onclick = () => selectProduct(name);
+        container.appendChild(btn);
+      });
     }
 
-    function getCategoryLabel(category) {
-      const labels = {
-        lavoro: '💼 Lavoro',
-        salute: '❤️ Salute', 
-        famiglia: '👨‍👩‍👧 Famiglia',
-        casa: '🏠 Casa'
-      };
-      return labels[category] || category;
+    function selectProduct(name) {
+      if (!lista.includes(name)) {
+        lista.push(name);
+        saveData();
+      }
+      showSection('lista');
     }
 
-    function renderDate() {
-      const options = { 
-        weekday: 'long', 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric' 
-      };
-      document.getElementById('currentDate').textContent = 
-        currentDate.toLocaleDateString('it-IT', { day: 'numeric', month: 'long', year: 'numeric' });
-      document.getElementById('timelineTitle').textContent = 
-        currentDate.toLocaleDateString('it-IT', options);
-    }
-
-    function renderInsights() {
-      const insightsEl = document.getElementById('insights');
-      const dateKey = getDateKey(currentDate);
-      const dayEvents = events[dateKey] || [];
-      
-      if (dayEvents.length === 0) {
-        insightsEl.innerHTML = `
-          <div class="insight">
-            <div class="insight-icon">🧠</div>
-            <div><strong>Analisi pattern:</strong> Aggiungi i primi eventi per vedere insights personalizzati</div>
-          </div>
-        `;
+    function renderLista() {
+      const container = document.getElementById('listaItems');
+      const empty = document.getElementById('emptyLista');
+      container.innerHTML = '';
+      if (lista.length === 0) {
+        empty.style.display = 'block';
         return;
       }
-      
-      const totalEvents = dayEvents.length;
-      const workEvents = dayEvents.filter(e => e.category === 'lavoro').length;
-      const freeSlots = 24 - totalEvents * 0.5;
-      
-      insightsEl.innerHTML = `
-        <div class="insight">
-          <div class="insight-icon">📊</div>
-          <div><strong>${totalEvents} eventi</strong> oggi (${Math.round(workEvents/totalEvents*100)}% lavoro)</div>
-        </div>
-        <div class="insight">
-          <div class="insight-icon">⏰</div>
-          <div><strong>~${Math.round(freeSlots)}h</strong> di tempo libero stimato</div>
-        </div>
-        <div class="insight">
-          <div class="insight-icon">💡</div>
-          <div><strong>Suggerimento:</strong> ${getSmartSuggestion(dayEvents)}</div>
-        </div>
-      `;
+      empty.style.display = 'none';
+      lista.forEach(name => {
+        const item = document.createElement('div');
+        item.className = 'lista-item';
+        item.innerHTML = `<span>${name}</span>`;
+        container.appendChild(item);
+      });
     }
 
-    function getSmartSuggestion(events) {
-      const workCount = events.filter(e => e.category === 'lavoro').length;
-      if (workCount > 4) return "Considera buffer anti-stress tra riunioni";
-      if (events.length === 0) return "Inizia con 3-5 eventi chiave";
-      return "Ottimo ritmo! Mantieni la giornata bilanciata";
-    }
-
-    function exportData() {
-      const dataStr = JSON.stringify(events, null, 2);
-      const dataBlob = new Blob([dataStr], {type: 'application/json'});
-      const url = URL.createObjectURL(dataBlob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `sage-timeline-${new Date().toISOString().split('T')[0]}.json`;
-      link.click();
-    }
-
-    document.getElementById('importFile').addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          events = JSON.parse(e.target.result);
-          saveData();
-          render();
-        };
-        reader.readAsText(file);
-      }
-    });
-
-    // Event listeners
-    document.getElementById('quickInput').addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') addQuickEvent();
-    });
-
-    // Chiudi modal cliccando fuori
-    document.getElementById('editModal').addEventListener('click', (e) => {
-      if (e.target.classList.contains('modal')) closeModal();
-    });
-
-    function render() {
-      renderDate();
-      renderTimeline();
-      renderInsights();
+    function clearLista() {
+      lista = [];
+      saveData();
+      renderLista();
     }
 
     // Init
-    render();
+    renderProducts();
   </script>
 </body>
 </html>
-\
