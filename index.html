@@ -194,13 +194,13 @@
       background: rgba(255,255,255,0.85);
       backdrop-filter: blur(20px);
       border: 1px solid var(--border);
-      border-radius: 20px; /* Più stondato Apple */
-      padding: 12px 8px; /* Più piccolo */
+      border-radius: 20px;
+      padding: 12px 8px;
       cursor: pointer;
       transition: all 0.2s;
       position: relative;
       overflow: hidden;
-      height: 72px; /* Altezza fissa per griglia uniforme */
+      height: 72px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -236,6 +236,55 @@
       font-size: 12px;
       color: var(--text-secondary);
       opacity: 0.8;
+    }
+
+    /* Edit mode */
+    .edit-mode .product-card {
+      padding: 8px 8px 4px;
+      height: 80px;
+      position: relative;
+    }
+
+    .edit-controls {
+      position: absolute;
+      bottom: 4px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 4px;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .edit-mode .edit-controls {
+      opacity: 1;
+    }
+
+    .edit-btn {
+      width: 24px;
+      height: 24px;
+      border-radius: 12px;
+      border: none;
+      font-size: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .edit-btn.edit {
+      background: var(--mint-400);
+      color: var(--text-primary);
+    }
+
+    .edit-btn.delete {
+      background: #ef4444;
+      color: white;
+    }
+
+    .edit-btn:active {
+      transform: scale(0.9);
     }
 
     /* Lista overlay */
@@ -378,6 +427,9 @@
         height: 68px;
         font-size: 13px;
       }
+      .edit-mode .product-card {
+        height: 76px;
+      }
     }
   </style>
 </head>
@@ -389,7 +441,7 @@
       <div class="header-text">Mint</div>
       <span>Offline</span>
       <div class="header-buttons">
-        <button class="header-btn">?</button>
+        <button class="header-btn" onclick="toggleEditMode()">✏️</button>
         <button class="header-btn">⚙️</button>
       </div>
     </div>
@@ -428,37 +480,60 @@
   </div>
 
   <script>
-    let products = JSON.parse(localStorage.getItem('mintProducts')) || ['Latte', 'Acqua', 'Succo', 'Birra', 'Vino', 'Soda'];
+    let products = JSON.parse(localStorage.getItem('mintProducts')) || ['Acqua', 'Birra', 'Latte', 'Soda', 'Succo', 'Vino'];
     let lista = JSON.parse(localStorage.getItem('mintLista')) || [];
     let isListaOpen = false;
+    let isEditMode = false;
+    let currentSearchTerm = '';
+
+    // Ordina i prodotti alfabeticamente all'avvio
+    products.sort((a, b) => a.localeCompare(b, 'it'));
 
     function saveData() {
       localStorage.setItem('mintProducts', JSON.stringify(products));
       localStorage.setItem('mintLista', JSON.stringify(lista));
     }
 
+    function sortProducts() {
+      products.sort((a, b) => a.localeCompare(b, 'it'));
+      saveData();
+    }
+
     function renderProducts() {
       const container = document.getElementById('productsGrid');
       container.innerHTML = '';
       
-      if (products.length === 0) {
+      let displayProducts = products;
+      if (currentSearchTerm) {
+        displayProducts = products.filter(p => p.toLowerCase().includes(currentSearchTerm.toLowerCase()));
+      }
+      
+      if (displayProducts.length === 0) {
         container.innerHTML = `
           <div class="product-card empty-state" style="grid-column: 1/-1;">
             <div style="font-size: 48px; margin-bottom: 16px;">🥛</div>
-            Nessun prodotto
+            ${currentSearchTerm ? `Nessun risultato per "${currentSearchTerm}"` : 'Nessun prodotto'}
           </div>
         `;
         return;
       }
 
-      products.forEach((name) => {
+      displayProducts.forEach((name) => {
         const card = document.createElement('div');
         card.className = 'product-card';
         card.innerHTML = `
           <div class="product-name">${name}</div>
           <div class="product-category">Drink</div>
+          ${isEditMode ? `
+            <div class="edit-controls">
+              <button class="edit-btn edit" onclick="editProduct('${name.replace(/'/g, "\\'")}')" title="Modifica">✏️</button>
+              <button class="edit-btn delete" onclick="deleteProduct('${name.replace(/'/g, "\\'")}')" title="Elimina">🗑️</button>
+            </div>
+          ` : ''}
         `;
-        card.onclick = () => toggleProductInLista(name);
+        if (!isEditMode) {
+          card.onclick = () => toggleProductInLista(name);
+        }
         container.appendChild(card);
       });
     }
@@ -529,35 +604,58 @@
       const name = prompt('Nome nuovo prodotto:');
       if (name && name.trim() && !products.includes(name.trim())) {
         products.push(name.trim());
-        saveData();
+        sortProducts();
         renderProducts();
       }
     }
 
+    function editProduct(oldName) {
+      const newName = prompt('Modifica nome prodotto:', oldName);
+      if (newName && newName.trim() && newName.trim() !== oldName && !products.includes(newName.trim())) {
+        const index = products.indexOf(oldName);
+        if (index > -1) {
+          products[index] = newName.trim();
+          sortProducts();
+          renderProducts();
+          // Aggiorna anche la lista se contiene il vecchio nome
+          const listaIndex = lista.indexOf(oldName);
+          if (listaIndex > -1) {
+            lista[listaIndex] = newName.trim();
+            saveData();
+            if (isListaOpen) renderLista();
+          }
+        }
+      }
+    }
+
+    function deleteProduct(name) {
+      if (confirm(`Eliminare "${name}"?`)) {
+        const index = products.indexOf(name);
+        if (index > -1) {
+          products.splice(index, 1);
+          // Rimuovi dalla lista se presente
+          const listaIndex = lista.indexOf(name);
+          if (listaIndex > -1) {
+            lista.splice(listaIndex, 1);
+          }
+          saveData();
+          renderProducts();
+          updateListaBtn();
+          if (isListaOpen) renderLista();
+        }
+      }
+    }
+
+    function toggleEditMode() {
+      isEditMode = !isEditMode;
+      document.body.classList.toggle('edit-mode', isEditMode);
+      renderProducts();
+    }
+
     // Search filter
     document.getElementById('searchInput').addEventListener('input', (e) => {
-      const term = e.target.value.toLowerCase();
-      const filteredContainer = document.getElementById('productsGrid');
-      filteredContainer.innerHTML = '';
-      
-      const filtered = products.filter(p => p.toLowerCase().includes(term));
-      
-      if (filtered.length === 0 && term) {
-        filteredContainer.innerHTML = `
-          <div class="product-card empty-state" style="grid-column: 1/-1;">
-            Nessun risultato per "${term}"
-          </div>
-        `;
-        return;
-      }
-      
-      filtered.forEach(name => {
-        const card = document.createElement('div');
-        card.className = 'product-card';
-        card.innerHTML = `<div class="product-name">${name}</div><div class="product-category">Drink</div>`;
-        card.onclick = () => toggleProductInLista(name);
-        filteredContainer.appendChild(card);
-      });
+      currentSearchTerm = e.target.value;
+      renderProducts();
     });
 
     // Init
