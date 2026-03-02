@@ -21,7 +21,6 @@
       --border: rgba(168, 196, 165, 0.3);
     }
 
-    /* Dark mode */
     [data-theme="dark"] {
       --mint-50: #1a1f19;
       --mint-100: #253228;
@@ -38,11 +37,7 @@
       --border: rgba(151, 194, 175, 0.2);
     }
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
       font-family: -apple-system, SF Pro Display, HelveticaNeue, sans-serif;
@@ -54,12 +49,8 @@
       transition: all 0.3s ease;
     }
 
-    .container {
-      max-width: 390px;
-      margin: 0 auto;
-    }
+    .container { max-width: 390px; margin: 0 auto; }
 
-    /* Header */
     .header {
       display: flex;
       align-items: center;
@@ -107,11 +98,7 @@
       transform: scale(0.95);
     }
 
-    /* Search */
-    .search-container {
-      position: relative;
-      margin-bottom: 20px;
-    }
+    .search-container { position: relative; margin-bottom: 20px; }
 
     .search-input {
       width: 100%;
@@ -124,9 +111,7 @@
       color: var(--text-primary);
     }
 
-    [data-theme="dark"] .search-input {
-      background: rgba(255,255,255,0.1);
-    }
+    [data-theme="dark"] .search-input { background: rgba(255,255,255,0.1); }
 
     .search-input:focus {
       outline: none;
@@ -151,7 +136,6 @@
       line-height: 1.4;
     }
 
-    /* FAB */
     .fab-container {
       position: fixed;
       bottom: 32px;
@@ -193,11 +177,8 @@
       box-shadow: 0 6px 24px rgba(144, 179, 154, 0.4);
     }
 
-    .add-btn:active, .lista-btn:active {
-      transform: scale(0.95);
-    }
+    .add-btn:active, .lista-btn:active { transform: scale(0.95); }
 
-    /* Products grid */
     .products-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -224,9 +205,7 @@
       text-align: center;
     }
 
-    [data-theme="dark"] .product-card {
-      background: rgba(255,255,255,0.1);
-    }
+    [data-theme="dark"] .product-card { background: rgba(255,255,255,0.1); }
 
     .product-card::before {
       content: '';
@@ -244,24 +223,10 @@
       border-color: var(--mint-500);
     }
 
-    .product-name {
-      font-weight: 600;
-      margin-bottom: 2px;
-      line-height: 1.2;
-    }
+    .product-name { font-weight: 600; margin-bottom: 2px; line-height: 1.2; }
+    .product-category { font-size: 12px; color: var(--text-secondary); opacity: 0.8; }
 
-    .product-category {
-      font-size: 12px;
-      color: var(--text-secondary);
-      opacity: 0.8;
-    }
-
-    /* Edit mode */
-    .edit-mode .product-card {
-      padding: 8px 8px 4px;
-      height: 80px;
-    }
-
+    .edit-mode .product-card { padding: 8px 8px 4px; height: 80px; }
     .edit-controls {
       position: absolute;
       bottom: 4px;
@@ -272,10 +237,7 @@
       opacity: 0;
       transition: opacity 0.2s;
     }
-
-    .edit-mode .edit-controls {
-      opacity: 1;
-    }
+    .edit-mode .edit-controls { opacity: 1; }
 
     .edit-btn {
       width: 24px;
@@ -292,10 +254,9 @@
 
     .edit-btn.edit { background: var(--mint-400); color: var(--text-primary); }
     .edit-btn.delete { background: #ef4444; color: white; }
-
     .edit-btn:active { transform: scale(0.9); }
 
-    /* Overlays */
+    /* OVERLAY MIGLIORATO - CENTRATO */
     .overlay {
       position: fixed;
       top: 0;
@@ -318,97 +279,24 @@
       backdrop-filter: blur(30px);
       border-radius: 32px;
       width: 100%;
-      max-width: 380px;
+      max-width: 360px; /* Ridotto per centrare meglio */
       max-height: 80vh;
       overflow-y: auto;
       position: relative;
+      padding: 8px; /* Padding interno per centrare contenuto */
     }
 
     [data-theme="dark"] .overlay-container {
       background: rgba(26, 31, 25, 0.95);
     }
 
-    /* Lista */
-    .lista-header {
-      padding: 28px 24px 20px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .lista-title {
-      font-size: 24px;
-      font-weight: 700;
-      text-align: center;
-      margin-bottom: 8px;
-    }
-
-    .lista-subtitle {
-      text-align: center;
-      font-size: 15px;
-      color: var(--text-secondary);
-    }
-
-    .lista-items {
-      padding: 0 24px 28px;
-    }
-
-    .lista-item {
-      display: flex;
-      align-items: center;
-      padding: 16px 0;
-      border-bottom: 1px solid rgba(168, 196, 165, 0.1);
-    }
-
-    .lista-item:last-child { border-bottom: none; }
-
-    .lista-item-name {
-      font-size: 17px;
-      font-weight: 600;
-      flex: 1;
-    }
-
-    .lista-buttons {
-      position: sticky;
-      bottom: 0;
-      background: rgba(255,255,255,0.95);
-      backdrop-filter: blur(20px);
-      padding: 24px;
-      border-top: 1px solid var(--border);
-      display: flex;
-      gap: 12px;
-    }
-
-    [data-theme="dark"] .lista-buttons {
-      background: rgba(26, 31, 25, 0.95);
-    }
-
-    .btn {
-      flex: 1;
-      padding: 16px;
-      border: none;
-      border-radius: 20px;
-      font-size: 17px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .btn-indietro {
-      background: var(--mint-200);
-      color: var(--text-primary);
-      border: 1px solid var(--mint-400);
-    }
-
-    .btn-fatto {
-      background: linear-gradient(135deg, var(--mint-500), var(--mint-600));
-      color: white;
-    }
-
-    /* Settings */
+    /* Settings - SPAZIATURA MIGLIORATA */
     .settings-title {
       font-size: 24px;
       font-weight: 700;
       text-align: center;
-      margin-bottom: 32px;
+      margin: 28px 0 24px;
+      padding: 0 24px;
       color: var(--text-primary);
     }
 
@@ -416,8 +304,16 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 20px 0;
+      padding: 20px 24px; /* Più padding laterale */
       border-bottom: 1px solid var(--border);
+      margin: 0 8px; /* Margini per centrare */
+      border-radius: 16px;
+      margin-bottom: 8px;
+      background: rgba(255,255,255,0.5);
+    }
+
+    [data-theme="dark"] .settings-item {
+      background: rgba(255,255,255,0.1);
     }
 
     .settings-item:last-child { border-bottom: none; }
@@ -439,9 +335,7 @@
       border: 1px solid var(--border);
     }
 
-    .toggle-switch.active {
-      background: var(--mint-500);
-    }
+    .toggle-switch.active { background: var(--mint-500); }
 
     .toggle-knob {
       position: absolute;
@@ -455,9 +349,7 @@
       box-shadow: 0 2px 8px rgba(0,0,0,0.2);
     }
 
-    .toggle-switch.active .toggle-knob {
-      transform: translateX(20px);
-    }
+    .toggle-switch.active .toggle-knob { transform: translateX(20px); }
 
     .btn-action {
       padding: 12px 20px;
@@ -483,15 +375,39 @@
       padding: 12px 16px;
     }
 
-    .btn-action:active {
-      transform: scale(0.98);
-    }
+    .btn-action:active { transform: scale(0.98); }
 
-    .empty-state {
-      text-align: center;
-      padding: 60px 24px;
-      color: var(--text-secondary);
+    /* Lista styles (invariati) */
+    .lista-header { padding: 28px 24px 20px; border-bottom: 1px solid var(--border); }
+    .lista-title { font-size: 24px; font-weight: 700; text-align: center; margin-bottom: 8px; }
+    .lista-subtitle { text-align: center; font-size: 15px; color: var(--text-secondary); }
+    .lista-items { padding: 0 24px 28px; }
+    .lista-item {
+      display: flex;
+      align-items: center;
+      padding: 16px 0;
+      border-bottom: 1px solid rgba(168, 196, 165, 0.1);
     }
+    .lista-item:last-child { border-bottom: none; }
+    .lista-item-name { font-size: 17px; font-weight: 600; flex: 1; }
+    .lista-buttons {
+      position: sticky;
+      bottom: 0;
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(20px);
+      padding: 24px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 12px;
+    }
+    [data-theme="dark"] .lista-buttons { background: rgba(26, 31, 25, 0.95); }
+    .btn { flex: 1; padding: 16px; border: none; border-radius: 20px; font-size: 17px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .btn-indietro { background: var(--mint-200); color: var(--text-primary); border: 1px solid var(--mint-400); }
+    .btn-fatto { background: linear-gradient(135deg, var(--mint-500), var(--mint-600)); color: white; }
+    .btn:active { transform: scale(0.98); }
+
+    .empty-state { text-align: center; padding: 60px 24px; color: var(--text-secondary); }
+    .empty-icon { font-size: 48px; margin-bottom: 16px; }
 
     @media (max-width: 480px) {
       .products-grid { gap: 10px; }
@@ -533,14 +449,14 @@
       
       <div class="settings-item">
         <div class="settings-label">Modalità Scura</div>
-        <div class="toggle-switch" id="darkModeToggle" onclick="toggleDarkMode()">
+        <div class="toggle-switch" id="darkModeToggle">
           <div class="toggle-knob"></div>
         </div>
       </div>
 
       <div class="settings-item">
         <div class="settings-label">Vibrazioni</div>
-        <div class="toggle-switch" id="vibrationToggle" onclick="toggleVibration()">
+        <div class="toggle-switch" id="vibrationToggle">
           <div class="toggle-knob"></div>
         </div>
       </div>
@@ -584,12 +500,21 @@
 
     // Init
     products.sort((a, b) => a.localeCompare(b, 'it'));
-    
-    if (isDarkMode) {
-      document.documentElement.setAttribute('data-theme', 'dark');
-      document.getElementById('darkModeToggle').classList.add('active');
+    updateSettingsToggles();
+
+    function updateSettingsToggles() {
+      const darkToggle = document.getElementById('darkModeToggle');
+      const vibrationToggle = document.getElementById('vibrationToggle');
+      
+      darkToggle.classList.toggle('active', isDarkMode);
+      vibrationToggle.classList.toggle('active', isVibrationEnabled);
+      
+      if (isDarkMode) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      } else {
+        document.documentElement.removeAttribute('data-theme');
+      }
     }
-    document.getElementById('vibrationToggle').classList.toggle('active', isVibrationEnabled);
 
     function saveData() {
       localStorage.setItem('mintProducts', JSON.stringify(products));
@@ -752,19 +677,19 @@
       renderProducts();
     }
 
+    // TOGGLE FUNZIONANTI
     function toggleDarkMode() {
       isDarkMode = !isDarkMode;
-      document.documentElement.toggleAttribute('data-theme', isDarkMode);
-      document.getElementById('darkModeToggle').classList.toggle('active', isDarkMode);
+      updateSettingsToggles();
       saveSettings();
       vibrate(100);
     }
 
     function toggleVibration() {
       isVibrationEnabled = !isVibrationEnabled;
-      document.getElementById('vibrationToggle').classList.toggle('active', isVibrationEnabled);
+      updateSettingsToggles();
       saveSettings();
-      vibrate(isVibrationEnabled ? 200 : 0);
+      if (isVibrationEnabled) vibrate(200);
     }
 
     function toggleSettings() {
@@ -803,7 +728,10 @@
       renderProducts();
     });
 
-    // Close overlays clicking outside
+    // Click sui toggle switches
+    document.getElementById('darkModeToggle').addEventListener('click', toggleDarkMode);
+    document.getElementById('vibrationToggle').addEventListener('click', toggleVibration);
+
     document.querySelectorAll('.overlay').forEach(overlay => {
       overlay.addEventListener('click', (e) => {
         if (e.target.classList.contains('overlay')) {
@@ -813,7 +741,7 @@
       });
     });
 
-    // Init render
+    // Init
     renderProducts();
     updateListaBtn();
   </script>
